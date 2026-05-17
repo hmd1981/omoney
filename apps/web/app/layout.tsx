@@ -1,7 +1,20 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
+import { Inter, Vazirmatn } from 'next/font/google';
 
 const adsenseClient = 'ca-pub-3160854101704307';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap'
+});
+
+const vazirmatn = Vazirmatn({
+  subsets: ['arabic'],
+  variable: '--font-vazirmatn',
+  display: 'swap'
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -16,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fa">
+    <html lang="fa" className={`${inter.variable} ${vazirmatn.variable}`}>
       <head>
         <script
           async

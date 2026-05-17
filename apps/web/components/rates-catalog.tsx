@@ -56,7 +56,7 @@ const enNames: Record<string, string> = {
 
 async function getCatalog() {
   try {
-    const response = await fetch(`${apiBase}/exchange-rates/catalog`, { cache: 'no-store' });
+    const response = await fetch(`${apiBase}/exchange-rates/catalog`, { next: { revalidate: 60 } });
     if (!response.ok) return [] as CatalogRate[];
     return (await response.json()) as CatalogRate[];
   } catch {

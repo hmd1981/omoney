@@ -7,7 +7,9 @@ import { ProcessSection } from '../../components/process-section';
 import { TrustInstitutional } from '../../components/trust-institutional';
 import { InstitutionalFooter } from '../../components/institutional-footer';
 import { MediaBackground } from '../../components/media-background';
+import { HomepageRatesProvider } from '../../components/homepage-rates-provider';
 import { content } from '../../lib/content';
+import { getHomepageRates } from '../../lib/homepage-rates';
 import { getMediaPlacements } from '../../lib/media';
 
 const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
@@ -15,7 +17,7 @@ const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
 export default async function Page({ params }: { params: Promise<{ locale: keyof typeof content }> }) {
   const { locale } = await params;
   const t = content[locale] ?? content.fa;
-  const media = await getMediaPlacements();
+  const [media, initialRates] = await Promise.all([getMediaPlacements(), getHomepageRates()]);
   const fa = locale === 'fa';
 
   const faq = fa
@@ -32,9 +34,10 @@ export default async function Page({ params }: { params: Promise<{ locale: keyof
 
   return (
     <SiteShell locale={locale}>
-      <PremiumHero locale={locale} media={media} />
-
-      <LiveRatesSection locale={locale} />
+      <HomepageRatesProvider initialRates={initialRates}>
+        <PremiumHero locale={locale} media={media} />
+        <LiveRatesSection locale={locale} />
+      </HomepageRatesProvider>
 
       <CorridorsShowcase locale={locale} media={media} />
 
