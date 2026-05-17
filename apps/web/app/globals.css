@@ -318,6 +318,69 @@ h4 {
   -webkit-backdrop-filter: blur(16px);
 }
 
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  border: 0;
+  background: rgba(6, 13, 24, 0.72);
+  cursor: pointer;
+}
+
+.mobile-nav-panel {
+  position: fixed;
+  top: 0;
+  inset-inline-end: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  width: min(88vw, 320px);
+  height: 100dvh;
+  border-inline-start: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-950) 100%);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
+  animation: mobile-nav-in 220ms ease-out;
+}
+
+@keyframes mobile-nav-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+[dir='rtl'] .mobile-nav-panel {
+  animation-name: mobile-nav-in-rtl;
+}
+
+@keyframes mobile-nav-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mobile-nav-auth > div {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.mobile-nav-auth a,
+.mobile-nav-auth button {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
 .brand-logo {
   filter: drop-shadow(0 2px 12px rgba(199, 161, 91, 0.25));
 }

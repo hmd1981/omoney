@@ -1,7 +1,13 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 const adsenseClient = 'ca-pub-3160854101704307';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover'
+};
 
 export const metadata: Metadata = {
   title: 'OMoney | International Remittance from Oman and UAE',
