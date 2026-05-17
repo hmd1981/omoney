@@ -7,7 +7,7 @@ import { ProcessSection } from '../../components/process-section';
 import { TrustInstitutional } from '../../components/trust-institutional';
 import { InstitutionalFooter } from '../../components/institutional-footer';
 import { MediaBackground } from '../../components/media-background';
-import { HomepageRatesProvider } from '../../components/homepage-rates-provider';
+import { HomepageRatesProvider } from '../../components/homepage-rates';
 import { content } from '../../lib/content';
 import { getHomepageRates } from '../../lib/homepage-rates';
 import { getMediaPlacements } from '../../lib/media';

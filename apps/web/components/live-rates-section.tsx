@@ -2,7 +2,7 @@
 
 import { ArrowDownRight, ArrowUpRight, Minus, RefreshCw } from 'lucide-react';
 import { content } from '../lib/content';
-import { LiveRate, useHomepageRates } from './use-homepage-rates';
+import { LiveRate, useHomepageRates } from './homepage-rates';
 
 const rateMeta: Record<string, { fa: string; en: string; mark: string }> = {
   USD: { fa: 'دلار آمریکا', en: 'US Dollar', mark: '$' },

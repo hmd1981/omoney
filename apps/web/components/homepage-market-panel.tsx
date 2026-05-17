@@ -2,7 +2,7 @@
 
 import { ArrowLeftRight, RefreshCw } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { LiveRate, useHomepageRates } from './use-homepage-rates';
+import { LiveRate, useHomepageRates } from './homepage-rates';
 
 const corridorConfig = [
   { baseCurrency: 'OMR', fa: 'ریال عمان', en: 'Omani Rial', exampleAmount: 100 },

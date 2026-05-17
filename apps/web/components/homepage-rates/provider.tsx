@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import type { LiveRate } from '../lib/homepage-rates';
+import type { LiveRate } from '../../lib/homepage-rates';
 
 type HomepageRatesContextValue = {
   rates: LiveRate[];
