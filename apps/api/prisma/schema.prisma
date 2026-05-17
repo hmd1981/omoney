@@ -1,0 +1,418 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  FINANCE_MANAGER
+  KYC_REVIEWER
+  SUPPORT_AGENT
+  AUDITOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  DRAFT
+  SUBMITTED
+  WAITING_FOR_PAYMENT
+  PAYMENT_UPLOADED
+  UNDER_REVIEW
+  PROCESSING
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum UserPhoneType {
+  PRIMARY
+  WHATSAPP
+  OMAN
+  UAE
+  TURKEY
+  IRAN
+  OTHER
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum MediaPlacementKey {
+  HOME_HERO
+  HOME_SECURITY
+  HOME_KYC
+  HOME_CORRIDORS
+  HOME_FAQ
+  ABOUT_HERO
+  CONTACT_HERO
+  LOGIN_HERO
+  REGISTER_HERO
+  DASHBOARD_EMPTY
+  TRANSFER_EMPTY
+  KYC_EMPTY
+  SECURITY_SECTION
+  FOOTER_BACKGROUND
+}
+
+model User {
+  id             String            @id @default(cuid())
+  email          String            @unique
+  phone          String?           @unique
+  externalAuthProvider String?
+  externalAuthSubject  String?
+  passwordHash   String
+  status         UserStatus        @default(PENDING_VERIFICATION)
+  profile        UserProfile?
+  phones         UserPhone[]
+  bankAccounts   UserBankAccount[]
+  sessions       UserSession[]
+  kycDocuments   KycDocument[]
+  orders         RemittanceOrder[]
+  tickets        SupportTicket[]
+  notifications  Notification[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@unique([externalAuthProvider, externalAuthSubject])
+}
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  firstName   String
+  lastName    String
+  country     String
+  city        String?
+  address     String?
+  dateOfBirth DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserPhone {
+  id         String        @id @default(cuid())
+  userId     String
+  type       UserPhoneType
+  label      String?
+  number     String
+  isPrimary  Boolean       @default(false)
+  isVerified Boolean       @default(false)
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([userId, type])
+  @@unique([userId, number])
+}
+
+model UserBankAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  country           String
+  bankName          String
+  accountHolderName String
+  iban              String?
+  accountNumber     String?
+  currency          String
+  isDefault         Boolean  @default(false)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId, country])
+}
+
+model UserSession {
+  id               String   @id @default(cuid())
+  userId           String
+  refreshTokenHash String
+  ipAddress        String?
+  userAgent        String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KycDocument {
+  id           String    @id @default(cuid())
+  userId       String
+  documentType String
+  fileKey      String
+  mimeType     String
+  sizeBytes    Int
+  status       KycStatus @default(PENDING)
+  reviewedById String?
+  reviewedAt   DateTime?
+  rejectionReason String?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy   AdminUser? @relation(fields: [reviewedById], references: [id])
+  createdAt    DateTime  @default(now())
+}
+
+model Currency {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  symbol    String
+  decimals  Int      @default(2)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  ratesFrom ExchangeRate[] @relation("RateFrom")
+  ratesTo ExchangeRate[] @relation("RateTo")
+  corridorSources TransferCorridor[] @relation("CorridorSource")
+  corridorTargets TransferCorridor[] @relation("CorridorTarget")
+}
+
+model ExchangeRate {
+  id             String   @id @default(cuid())
+  fromCurrencyId String
+  toCurrencyId   String
+  buyRate        Decimal  @db.Decimal(18, 8)
+  sellRate       Decimal  @db.Decimal(18, 8)
+  effectiveAt    DateTime @default(now())
+  createdById    String
+  fromCurrency   Currency @relation("RateFrom", fields: [fromCurrencyId], references: [id])
+  toCurrency     Currency @relation("RateTo", fields: [toCurrencyId], references: [id])
+  createdBy      AdminUser @relation(fields: [createdById], references: [id])
+}
+
+model ExchangeRateSnapshot {
+  id               String   @id @default(cuid())
+  baseCurrency     String
+  quoteCurrency    String
+  displayCurrency  String
+  marketRateIrr    Decimal? @db.Decimal(18, 4)
+  marketRateToman  Decimal? @db.Decimal(18, 4)
+  buyRateToman     Decimal? @db.Decimal(18, 4)
+  sellRateToman    Decimal? @db.Decimal(18, 4)
+  sourceProvider   String
+  sourceKey        String?
+  sourceTimestamp  DateTime?
+  direction        String
+  changeAmount     Decimal? @db.Decimal(18, 4)
+  stale            Boolean  @default(false)
+  unavailable      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([baseCurrency, quoteCurrency, createdAt])
+}
+
+model ExchangeRateOverride {
+  id                     String   @id @default(cuid())
+  baseCurrency           String
+  quoteCurrency          String
+  enabled                Boolean  @default(true)
+  frozen                 Boolean  @default(false)
+  manualMarketRateToman  Decimal? @db.Decimal(18, 4)
+  buyMarkupPercent       Decimal? @db.Decimal(8, 4)
+  sellMarkupPercent      Decimal? @db.Decimal(8, 4)
+  fixedBuyRateToman      Decimal? @db.Decimal(18, 4)
+  fixedSellRateToman     Decimal? @db.Decimal(18, 4)
+  reason                 String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([baseCurrency, quoteCurrency])
+}
+
+model ExchangeRateSettings {
+  id                      String   @id @default("global")
+  enableLiveRates         Boolean  @default(true)
+  defaultProvider         String   @default("navasan")
+  fallbackProvider        String   @default("manual")
+  staleAfterSec           Int      @default(300)
+  globalBuyMarkupPercent  Decimal  @default(0.75) @db.Decimal(8, 4)
+  globalSellMarkupPercent Decimal  @default(0.75) @db.Decimal(8, 4)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model TransferCorridor {
+  id             String   @id @default(cuid())
+  sourceCountry  String
+  targetCountry  String
+  sourceCurrencyId String
+  targetCurrencyId String
+  isActive       Boolean  @default(true)
+  sourceCurrency Currency @relation("CorridorSource", fields: [sourceCurrencyId], references: [id])
+  targetCurrency Currency @relation("CorridorTarget", fields: [targetCurrencyId], references: [id])
+  orders         RemittanceOrder[]
+}
+
+model RemittanceOrder {
+  id               String               @id @default(cuid())
+  userId           String
+  corridorId       String
+  sourceAmount     Decimal              @db.Decimal(18, 2)
+  targetAmount     Decimal              @db.Decimal(18, 2)
+  feeAmount        Decimal              @db.Decimal(18, 2)
+  beneficiaryName  String
+  beneficiaryBank  String?
+  beneficiaryAccount String?
+  status           OrderStatus          @default(DRAFT)
+  user             User                 @relation(fields: [userId], references: [id])
+  corridor         TransferCorridor     @relation(fields: [corridorId], references: [id])
+  statusHistory    OrderStatusHistory[]
+  paymentProofs    PaymentProof[]
+  internalNotes    OrderInternalNote[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model OrderInternalNote {
+  id          String          @id @default(cuid())
+  orderId     String
+  adminUserId String
+  body        String
+  order       RemittanceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  adminUser   AdminUser       @relation(fields: [adminUserId], references: [id])
+  createdAt   DateTime        @default(now())
+}
+
+model OrderStatusHistory {
+  id          String      @id @default(cuid())
+  orderId     String
+  fromStatus  OrderStatus?
+  toStatus    OrderStatus
+  note        String?
+  changedById String?
+  order       RemittanceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  changedBy   AdminUser? @relation(fields: [changedById], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model PaymentProof {
+  id         String   @id @default(cuid())
+  orderId    String
+  fileKey    String
+  mimeType   String
+  sizeBytes  Int
+  order      RemittanceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model SupportTicket {
+  id          String       @id @default(cuid())
+  userId      String
+  subject     String
+  message     String
+  status      TicketStatus @default(OPEN)
+  priority    TicketPriority @default(NORMAL)
+  assignedToId String?
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedTo  AdminUser?   @relation(fields: [assignedToId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  readAt    DateTime?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model AdminUser {
+  id              String               @id @default(cuid())
+  email           String               @unique
+  passwordHash    String
+  role            AdminRole
+  isActive        Boolean              @default(true)
+  kycReviews      KycDocument[]
+  createdRates    ExchangeRate[]
+  statusChanges   OrderStatusHistory[]
+  orderNotes      OrderInternalNote[]
+  assignedTickets SupportTicket[]
+  auditLogs       AuditLog[]
+  mediaUploads    Media[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+model Media {
+  id             String           @id @default(cuid())
+  title          String
+  slug           String           @unique
+  mediaType      MediaType
+  fileUrl        String
+  thumbnailUrl   String?
+  mobileFileUrl  String?
+  altText        String?
+  overlayOpacity Float            @default(0.45)
+  focalPoint     Json?
+  autoplay       Boolean          @default(false)
+  muted          Boolean          @default(true)
+  loop           Boolean          @default(false)
+  published      Boolean          @default(false)
+  fileKey        String
+  thumbnailKey   String?
+  mobileFileKey  String?
+  createdById    String?
+  createdBy      AdminUser?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  placements     MediaPlacement[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([published, createdAt])
+}
+
+model MediaPlacement {
+  id        String            @id @default(cuid())
+  placement MediaPlacementKey @unique
+  mediaId   String
+  media     Media             @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  adminUserId String
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  ipAddress   String?
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model RolePermission {
+  id         String    @id @default(cuid())
+  role       AdminRole
+  permission String
+  @@unique([role, permission])
+}

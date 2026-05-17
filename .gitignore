@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+!.env.production.example
+backups
+*.sql
+*.dump
+*.tar.gz
+node_modules
+.next
+dist
+coverage
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
