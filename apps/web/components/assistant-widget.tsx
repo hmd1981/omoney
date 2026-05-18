@@ -8,11 +8,13 @@ type ChatMessage = {
   content: string;
 };
 
+import { getWhatsAppHref } from '../lib/whatsapp';
+
 const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
-const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
 
 export function AssistantWidget({ locale }: { locale: 'fa' | 'en' }) {
   const fa = locale === 'fa';
+  const whatsappHref = getWhatsAppHref(locale);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);

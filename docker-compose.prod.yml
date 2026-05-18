@@ -82,6 +82,7 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WHATSAPP_MESSAGE_URL: ${PUBLIC_WHATSAPP_MESSAGE_URL}
     restart: unless-stopped
     env_file: .env.production
     environment:

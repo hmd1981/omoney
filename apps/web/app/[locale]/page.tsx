@@ -11,14 +11,15 @@ import { HomepageRatesProvider } from '../../components/homepage-rates';
 import { content } from '../../lib/content';
 import { getHomepageRates } from '../../lib/homepage-rates';
 import { getMediaPlacements } from '../../lib/media';
-
-const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
+import { visualAssets } from '../../lib/visual-assets';
+import { getWhatsAppHref } from '../../lib/whatsapp';
 
 export default async function Page({ params }: { params: Promise<{ locale: keyof typeof content }> }) {
   const { locale } = await params;
   const t = content[locale] ?? content.fa;
   const [media, initialRates] = await Promise.all([getMediaPlacements(), getHomepageRates()]);
   const fa = locale === 'fa';
+  const whatsappHref = getWhatsAppHref(locale);
 
   const faq = fa
     ? [
@@ -49,7 +50,13 @@ export default async function Page({ params }: { params: Promise<{ locale: keyof
         <div className="mx-auto grid max-w-7xl gap-6 px-4 py-14 md:grid-cols-2 md:px-6">
           <article className="surface-glass overflow-hidden rounded-xl p-6">
             <div className="media-card-slot">
-              <MediaBackground media={media.HOME_SECURITY} />
+              <MediaBackground
+                media={media.HOME_SECURITY}
+                fallback={{
+                  jpg: visualAssets.offices.gulfOffice,
+                  webp: visualAssets.offices.gulfOfficeWebp
+                }}
+              />
             </div>
             <p className="eyebrow mt-2">{fa ? 'امنیت' : 'Security'}</p>
             <h2 className="mt-3 text-2xl font-semibold">{t.securityTitle}</h2>
@@ -61,7 +68,13 @@ export default async function Page({ params }: { params: Promise<{ locale: keyof
           </article>
           <article className="surface-glass overflow-hidden rounded-xl p-6">
             <div className="media-card-slot">
-              <MediaBackground media={media.HOME_KYC} />
+              <MediaBackground
+                media={media.HOME_KYC}
+                fallback={{
+                  jpg: visualAssets.offices.consultation,
+                  webp: visualAssets.offices.consultationWebp
+                }}
+              />
             </div>
             <p className="eyebrow mt-2">KYC / AML</p>
             <h2 className="mt-3 text-2xl font-semibold">{t.kycTitle}</h2>

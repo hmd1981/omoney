@@ -17,6 +17,7 @@ import { RatesCatalog } from '../../../components/rates-catalog';
 import { CinematicBackground } from '../../../components/cinematic-background';
 import { content } from '../../../lib/content';
 import { getMediaPlacements } from '../../../lib/media';
+import { getWhatsAppHref } from '../../../lib/whatsapp';
 
 const pages = {
   fa: {
@@ -373,6 +374,7 @@ export default async function StaticPage({
       : undefined;
   const fa = locale === 'fa';
   const serviceCopy = servicePage[locale];
+  const whatsappHref = getWhatsAppHref(locale);
 
   return (
     <SiteShell locale={locale}>
@@ -390,7 +392,7 @@ export default async function StaticPage({
                 <Link href={`/${locale}/register`} className="btn-primary">
                   {serviceCopy.ctaPrimary}
                 </Link>
-                <a href="https://wa.me/message/NBV22R27A46TB1" className="btn-ghost">
+                <a href={whatsappHref} className="btn-ghost">
                   {serviceCopy.ctaSecondary}
                 </a>
               </div>
@@ -546,7 +548,7 @@ export default async function StaticPage({
                     <h2 className="mt-3 text-3xl font-semibold">{serviceCopy.finalCtaTitle}</h2>
                     <p className="mt-4 max-w-2xl leading-8 text-white/72">{serviceCopy.finalCtaCopy}</p>
                   </div>
-                  <a className="btn-primary" href="https://wa.me/message/NBV22R27A46TB1">
+                  <a className="btn-primary" href={whatsappHref}>
                     <ClipboardCheck size={18} />
                     WhatsApp
                   </a>
@@ -592,6 +594,7 @@ export default async function StaticPage({
 function AboutContent({ locale }: { locale: keyof typeof pages }) {
   const fa = locale === 'fa';
   const about = aboutPage[locale];
+  const whatsappHref = getWhatsAppHref(locale);
 
   return (
     <>
@@ -630,7 +633,7 @@ function AboutContent({ locale }: { locale: keyof typeof pages }) {
             <p className="eyebrow text-[#dec58d]">{fa ? 'اطلاعات رسمی' : 'Official contact'}</p>
             <h2 className="mt-3 text-3xl font-semibold md:text-4xl">{about.contactTitle}</h2>
             <p className="mt-4 leading-8 text-white/70">{about.contactCopy}</p>
-            <a href="https://wa.me/message/NBV22R27A46TB1" className="btn-primary mt-7 inline-flex">
+            <a href={whatsappHref} className="btn-primary mt-7 inline-flex">
               <Headset size={18} />
               WhatsApp
             </a>
@@ -723,6 +726,7 @@ function AboutContent({ locale }: { locale: keyof typeof pages }) {
 function FaqContent({ locale }: { locale: keyof typeof pages }) {
   const fa = locale === 'fa';
   const faq = faqPage[locale];
+  const whatsappHref = getWhatsAppHref(locale);
 
   return (
     <>
@@ -784,7 +788,7 @@ function FaqContent({ locale }: { locale: keyof typeof pages }) {
               <h2 className="mt-3 text-3xl font-semibold text-white">{faq.ctaTitle}</h2>
               <p className="mt-4 max-w-2xl leading-8 text-white/70">{faq.ctaCopy}</p>
             </div>
-            <a href="https://wa.me/message/NBV22R27A46TB1" className="btn-primary">
+            <a href={whatsappHref} className="btn-primary">
               <Headset size={18} />
               WhatsApp
             </a>
@@ -798,6 +802,7 @@ function FaqContent({ locale }: { locale: keyof typeof pages }) {
 function LegalContent({ locale, page }: { locale: keyof typeof pages; page: 'terms' | 'privacy' }) {
   const legal = legalPage[locale][page];
   const fa = locale === 'fa';
+  const whatsappHref = getWhatsAppHref(locale);
   const Icon = page === 'terms' ? ClipboardCheck : ShieldCheck;
 
   return (
@@ -849,7 +854,7 @@ function LegalContent({ locale, page }: { locale: keyof typeof pages; page: 'ter
                   : 'Our support team can provide operational guidance on documents, transfer corridors, final rates, and processing conditions.'}
               </p>
             </div>
-            <a href="https://wa.me/message/NBV22R27A46TB1" className="btn-primary">
+            <a href={whatsappHref} className="btn-primary">
               <Headset size={18} />
               WhatsApp
             </a>

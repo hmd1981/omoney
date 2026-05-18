@@ -2,6 +2,11 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { ApiError, serverApiFetch } from '../../../../lib/api';
+import type { UserAccountSummary } from '../../../../lib/account-types';
+import { AccountSummaryGrid } from '../../../../components/account-summary-grid';
+import { StatusBadge } from '../../../../components/status-badge';
+import { UserLedgerTable, type LedgerOrder } from '../../../../components/user-ledger-table';
+import { fmtDate, ticketStatusFa } from '../../../../lib/admin-format';
 import { KycDocumentActions } from './kyc-document-actions';
 import { UserStatusActions } from './user-status-actions';
 
@@ -13,6 +18,7 @@ type UserDetail = {
   externalAuthProvider: string | null;
   createdAt: string;
   updatedAt: string;
+  accountSummary: UserAccountSummary;
   profile: {
     firstName: string;
     lastName: string;
@@ -37,19 +43,14 @@ type UserDetail = {
     rejectionReason: string | null;
     createdAt: string;
   }[];
-  orders: {
+  orders: LedgerOrder[];
+  tickets: {
     id: string;
+    subject: string;
     status: string;
-    sourceAmount: string;
-    targetAmount: string;
-    beneficiaryName: string;
+    priority: string;
     createdAt: string;
-    corridor: {
-      sourceCountry: string;
-      targetCountry: string;
-      sourceCurrency: { code: string };
-      targetCurrency: { code: string };
-    };
+    updatedAt: string;
   }[];
   sessions: {
     id: string;
@@ -73,165 +74,193 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
     throw error;
   }
 
+  const displayName = user.profile ? `${user.profile.firstName} ${user.profile.lastName}` : user.email;
+
   return (
-    <main className="mx-auto max-w-7xl space-y-6 p-5">
-      <div className="flex flex-col gap-3 border-b border-black/10 pb-5 md:flex-row md:items-start md:justify-between">
+    <main className="mx-auto max-w-7xl space-y-6 p-5 pb-12">
+      <header className="account-dossier-header">
         <div>
-          <Link href="/users" className="text-sm text-black/60 hover:underline">
-            ← Users
+          <Link href="/users" className="text-sm text-[#11221f]/70 hover:underline">
+            ← بازگشت به حساب‌های مشتری
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold">
-            {user.profile ? `${user.profile.firstName} ${user.profile.lastName}` : user.email}
-          </h1>
-          <p className="text-black/60">{user.email}</p>
-          {user.phone ? <p className="text-black/60">{user.phone}</p> : null}
+          <p className="account-dossier-kicker">پرونده حساب #{user.id.slice(0, 8)}</p>
+          <h1>{displayName}</h1>
+          <p className="account-dossier-meta">{user.email}</p>
+          {user.phone ? <p className="account-dossier-meta">{user.phone}</p> : null}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <StatusBadge value={user.status} kind="user" />
+            {user.externalAuthProvider ? (
+              <span className="admin-badge">ورود: {user.externalAuthProvider}</span>
+            ) : null}
+            <span className="text-sm text-black/55">
+              عضویت: {fmtDate.format(new Date(user.createdAt))}
+            </span>
+          </div>
         </div>
         <UserStatusActions userId={user.id} status={user.status} />
-      </div>
+      </header>
 
       {user.status === 'PENDING_VERIFICATION' ? (
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-          This user registered with email/password and is waiting for admin approval. Click <strong>Activate</strong>{' '}
-          to set status to ACTIVE. (Social logins are usually ACTIVE already.)
+        <p className="account-alert">
+          این کاربر با ایمیل/رمز ثبت‌نام کرده و منتظر تأیید ادمین است. با «فعال‌سازی» وضعیت را ACTIVE کنید.
         </p>
       ) : null}
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-md border bg-white p-4">
-          <p className="text-sm text-black/60">Orders</p>
-          <strong className="text-xl">{user._count.orders}</strong>
-        </article>
-        <article className="rounded-md border bg-white p-4">
-          <p className="text-sm text-black/60">Tickets</p>
-          <strong className="text-xl">{user._count.tickets}</strong>
-        </article>
-        <article className="rounded-md border bg-white p-4">
-          <p className="text-sm text-black/60">Joined</p>
-          <strong className="text-xl">{new Date(user.createdAt).toLocaleDateString()}</strong>
-        </article>
+      <section>
+        <h2 className="section-title">خلاصه مالی حساب</h2>
+        <p className="section-sub">تمام ارقام از سفارش‌های ثبت‌شده این مشتری — شفاف و قابل ردیابی</p>
+        <AccountSummaryGrid summary={user.accountSummary} userId={user.id} />
       </section>
 
-      {user.profile ? (
-        <section className="rounded-md border bg-white p-4">
-          <h2 className="font-medium">Profile</h2>
-          <dl className="mt-3 grid gap-2 text-sm md:grid-cols-2">
-            <div>
-              <dt className="text-black/60">Country</dt>
-              <dd>{user.profile.country}</dd>
-            </div>
-            <div>
-              <dt className="text-black/60">City</dt>
-              <dd>{user.profile.city ?? '—'}</dd>
-            </div>
-            <div className="md:col-span-2">
-              <dt className="text-black/60">Address</dt>
-              <dd>{user.profile.address ?? '—'}</dd>
-            </div>
-            {user.externalAuthProvider ? (
+      <section className="admin-panel">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="section-title mb-0">دفتر تراکنش‌ها (حواله)</h2>
+            <p className="section-sub">{user.orders.length} ردیف · کل ثبت‌شده در سیستم</p>
+          </div>
+        </div>
+        <UserLedgerTable orders={user.orders} />
+      </section>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Panel title="اطلاعات هویتی">
+          {user.profile ? (
+            <dl className="account-kv">
               <div>
-                <dt className="text-black/60">Auth provider</dt>
-                <dd>{user.externalAuthProvider}</dd>
+                <dt>کشور</dt>
+                <dd>{user.profile.country}</dd>
               </div>
-            ) : null}
-          </dl>
-        </section>
-      ) : null}
-
-      <Section title="Phone numbers" empty={!user.phones.length}>
-        <ul className="space-y-2 text-sm">
-          {user.phones.map((phone) => (
-            <li key={phone.id} className="flex flex-wrap gap-2">
-              <span className="font-medium">{phone.number}</span>
-              <span className="text-black/60">{phone.type}</span>
-              {phone.isPrimary ? <span className="rounded bg-black/5 px-2">Primary</span> : null}
-              {phone.isVerified ? <span className="rounded bg-green-50 px-2 text-green-800">Verified</span> : null}
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Bank accounts" empty={!user.bankAccounts.length}>
-        <ul className="space-y-3 text-sm">
-          {user.bankAccounts.map((account) => (
-            <li key={account.id} className="rounded border border-black/10 p-3">
-              <p className="font-medium">{account.bankName}</p>
-              <p>{account.accountHolderName}</p>
-              <p className="text-black/60">
-                {account.country} · {account.currency}
-                {account.iban ? ` · ${account.iban}` : ''}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="KYC documents" empty={!user.kycDocuments.length}>
-        <ul className="space-y-3 text-sm">
-          {user.kycDocuments.map((doc) => (
-            <li key={doc.id} className="rounded border border-black/10 p-3">
-              <div className="flex flex-wrap justify-between gap-2">
-                <span className="font-medium">{doc.documentType}</span>
-                <span className="text-black/60">{new Date(doc.createdAt).toLocaleString()}</span>
+              <div>
+                <dt>شهر</dt>
+                <dd>{user.profile.city ?? '—'}</dd>
               </div>
-              {doc.rejectionReason ? (
-                <p className="mt-1 text-xs text-red-700">Rejected: {doc.rejectionReason}</p>
-              ) : null}
-              <div className="mt-2">
-                <KycDocumentActions documentId={doc.id} status={doc.status} />
+              <div>
+                <dt>آدرس</dt>
+                <dd>{user.profile.address ?? '—'}</dd>
               </div>
-            </li>
-          ))}
-        </ul>
-      </Section>
+            </dl>
+          ) : (
+            <p className="text-sm text-black/55">پروفایل تکمیل نشده</p>
+          )}
+        </Panel>
 
-      <Section title="Recent orders" empty={!user.orders.length}>
-        <ul className="space-y-2 text-sm">
-          {user.orders.map((order) => (
-            <li key={order.id} className="flex flex-wrap justify-between gap-2 border-b border-black/5 py-2">
-              <span>
-                {order.corridor.sourceCurrency.code} → {order.corridor.targetCurrency.code} · {order.beneficiaryName}
-              </span>
-              <span>{order.status}</span>
-              <span className="text-black/60">{new Date(order.createdAt).toLocaleString()}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
+        <Panel title="شماره تماس">
+          {user.phones.length ? (
+            <ul className="account-list">
+              {user.phones.map((phone) => (
+                <li key={phone.id}>
+                  <strong>{phone.number}</strong>
+                  <span>
+                    {phone.type}
+                    {phone.isPrimary ? ' · اصلی' : ''}
+                    {phone.isVerified ? ' · تأییدشده' : ''}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty />
+          )}
+        </Panel>
 
-      <Section title="Recent sessions" empty={!user.sessions.length}>
-        <ul className="space-y-2 text-sm">
-          {user.sessions.map((session) => (
-            <li key={session.id} className="rounded border border-black/10 p-3">
-              <p className="font-mono text-xs">{session.id}</p>
-              <p className="text-black/60">{session.ipAddress ?? 'Unknown IP'}</p>
-              <p className="truncate text-black/60">{session.userAgent ?? 'Unknown agent'}</p>
-              <p>
-                {session.revokedAt ? 'Revoked' : 'Active'} · expires {new Date(session.expiresAt).toLocaleString()}
-              </p>
-            </li>
-          ))}
-        </ul>
-        <Link href="/sessions" className="mt-3 inline-block text-sm text-[#11221f] hover:underline">
-          View all sessions →
-        </Link>
-      </Section>
+        <Panel title="حساب‌های بانکی">
+          {user.bankAccounts.length ? (
+            <ul className="account-list">
+              {user.bankAccounts.map((account) => (
+                <li key={account.id} className="account-bank-card">
+                  <strong>{account.bankName}</strong>
+                  <span>{account.accountHolderName}</span>
+                  <span>
+                    {account.country} · {account.currency}
+                    {account.iban ? ` · ${account.iban}` : ''}
+                    {account.isDefault ? ' · پیش‌فرض' : ''}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty />
+          )}
+        </Panel>
+
+        <Panel title={`احراز هویت (${user.kycDocuments.length})`}>
+          {user.kycDocuments.length ? (
+            <ul className="account-list">
+              {user.kycDocuments.map((doc) => (
+                <li key={doc.id} className="account-bank-card">
+                  <div className="flex flex-wrap justify-between gap-2">
+                    <strong>{doc.documentType}</strong>
+                    <StatusBadge value={doc.status} kind="kyc" />
+                  </div>
+                  <span>{fmtDate.format(new Date(doc.createdAt))}</span>
+                  {doc.rejectionReason ? (
+                    <span className="text-red-700">دلیل رد: {doc.rejectionReason}</span>
+                  ) : null}
+                  <KycDocumentActions documentId={doc.id} status={doc.status} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty />
+          )}
+        </Panel>
+
+        <Panel title={`پشتیبانی (${user.tickets.length})`}>
+          {user.tickets.length ? (
+            <ul className="account-list">
+              {user.tickets.map((ticket) => (
+                <li key={ticket.id}>
+                  <Link href="/support" className="font-medium hover:underline">
+                    {ticket.subject}
+                  </Link>
+                  <span>
+                    {ticketStatusFa[ticket.status] ?? ticket.status} · {ticket.priority}
+                  </span>
+                  <span>{fmtDate.format(new Date(ticket.updatedAt))}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty />
+          )}
+        </Panel>
+
+        <Panel title="نشست‌های ورود">
+          {user.sessions.length ? (
+            <ul className="account-list">
+              {user.sessions.map((session) => (
+                <li key={session.id} className="account-bank-card">
+                  <span className="font-mono text-xs">{session.id}</span>
+                  <span>{session.ipAddress ?? 'IP نامشخص'}</span>
+                  <span className="truncate">{session.userAgent ?? '—'}</span>
+                  <span>
+                    {session.revokedAt ? 'لغو شده' : 'فعال'} · انقضا{' '}
+                    {fmtDate.format(new Date(session.expiresAt))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Empty />
+          )}
+          <Link href="/sessions" className="mt-3 inline-block text-sm text-[#11221f] hover:underline">
+            مدیریت همه نشست‌ها
+          </Link>
+        </Panel>
+      </div>
     </main>
   );
 }
 
-function Section({
-  title,
-  empty,
-  children
-}: {
-  title: string;
-  empty: boolean;
-  children: React.ReactNode;
-}) {
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-md border bg-white p-4">
-      <h2 className="font-medium">{title}</h2>
-      {empty ? <p className="mt-2 text-sm text-black/60">No records.</p> : <div className="mt-3">{children}</div>}
+    <section className="admin-panel">
+      <h2 className="section-title mb-4">{title}</h2>
+      {children}
     </section>
   );
+}
+
+function Empty() {
+  return <p className="text-sm text-black/55">رکوردی ثبت نشده.</p>;
 }

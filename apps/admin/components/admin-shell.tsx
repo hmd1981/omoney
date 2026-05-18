@@ -5,15 +5,17 @@ import { usePathname, useRouter } from 'next/navigation';
 import { authFetch } from '../lib/api';
 
 const nav = [
-  { href: '/', label: 'Dashboard', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'KYC_REVIEWER', 'SUPPORT_AGENT', 'AUDITOR'] },
-  { href: '/users', label: 'Users', roles: ['SUPER_ADMIN', 'KYC_REVIEWER', 'SUPPORT_AGENT', 'AUDITOR'] },
-  { href: '/kyc', label: 'KYC', roles: ['SUPER_ADMIN', 'KYC_REVIEWER', 'AUDITOR'] },
-  { href: '/orders', label: 'Orders', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
-  { href: '/rates', label: 'Rates', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
-  { href: '/support', label: 'Support', roles: ['SUPER_ADMIN', 'SUPPORT_AGENT', 'AUDITOR'] },
-  { href: '/sessions', label: 'Sessions', roles: ['SUPER_ADMIN', 'AUDITOR'] },
-  { href: '/audit-logs', label: 'Audit logs', roles: ['SUPER_ADMIN', 'AUDITOR'] },
-  { href: '/media', label: 'Media', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER'] }
+  { href: '/', label: 'داشبورد', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'KYC_REVIEWER', 'SUPPORT_AGENT', 'AUDITOR'] },
+  { href: '/users', label: 'حساب مشتریان', roles: ['SUPER_ADMIN', 'KYC_REVIEWER', 'SUPPORT_AGENT', 'AUDITOR'] },
+  { href: '/kyc', label: 'احراز هویت', roles: ['SUPER_ADMIN', 'KYC_REVIEWER', 'AUDITOR'] },
+  { href: '/ledger', label: 'دفتر روزنامه', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
+  { href: '/reports', label: 'گزارشات', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
+  { href: '/orders', label: 'سفارش‌ها', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
+  { href: '/rates', label: 'نرخ ارز', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER', 'AUDITOR'] },
+  { href: '/support', label: 'پشتیبانی', roles: ['SUPER_ADMIN', 'SUPPORT_AGENT', 'AUDITOR'] },
+  { href: '/sessions', label: 'نشست‌ها', roles: ['SUPER_ADMIN', 'AUDITOR'] },
+  { href: '/audit-logs', label: 'لاگ‌ها', roles: ['SUPER_ADMIN', 'AUDITOR'] },
+  { href: '/media', label: 'رسانه', roles: ['SUPER_ADMIN', 'FINANCE_MANAGER'] }
 ];
 
 export function AdminShell({ children, email, role }: { children: React.ReactNode; email: string; role: string }) {
@@ -31,7 +33,7 @@ export function AdminShell({ children, email, role }: { children: React.ReactNod
       <header className="border-b border-black/10 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm text-black/60">OMoney Admin</p>
+            <p className="text-sm text-black/60">پنل مدیریت OMoney</p>
             <p className="font-semibold">{email}</p>
             <p className="text-xs text-black/50">{role}</p>
           </div>
@@ -54,7 +56,7 @@ export function AdminShell({ children, email, role }: { children: React.ReactNod
               onClick={() => void logout()}
               className="rounded-md border border-black/15 px-3 py-2 text-sm hover:bg-black/5"
             >
-              Log out
+              خروج
             </button>
           </nav>
         </div>

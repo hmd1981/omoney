@@ -2,10 +2,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, LockKeyhole, MapPin, MessageCircle } from 'lucide-react';
 import { content } from '../lib/content';
+import { getWhatsAppHref } from '../lib/whatsapp';
 import { FooterCinematicLayer } from './footer-cinematic-layer';
 import type { MediaPlacementMap } from '../lib/media';
-
-const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
 
 const offices = {
   fa: [
@@ -30,6 +29,7 @@ export function InstitutionalFooter({
   const t = content[locale];
   const fa = locale === 'fa';
   const officeList = offices[locale];
+  const whatsappHref = getWhatsAppHref(locale);
 
   return (
     <footer className="footer-institutional relative isolate overflow-hidden border-t border-white/10">

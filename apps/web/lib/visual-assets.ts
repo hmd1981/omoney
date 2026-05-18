@@ -72,6 +72,9 @@ export const visualAssets = {
 export type CorridorKey = 'muscat' | 'dubai' | 'istanbul';
 
 export const corridorAssetKey: Record<string, CorridorKey> = {
+  muscat: 'muscat',
+  dubai: 'dubai',
+  istanbul: 'istanbul',
   مسقط: 'muscat',
   Muscat: 'muscat',
   دبی: 'dubai',

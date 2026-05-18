@@ -3,12 +3,11 @@
 import Link from 'next/link';
 import { CircleCheckBig } from 'lucide-react';
 import { content } from '../lib/content';
+import { getWhatsAppHref } from '../lib/whatsapp';
 import { HeroCinematicLayer } from './hero-cinematic-layer';
 import { CinematicHeroImage } from './cinematic-background';
 import { HomepageMarketPanel } from './homepage-market-panel';
 import type { MediaPlacementMap } from '../lib/media';
-
-const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
 
 export function PremiumHero({
   locale,
@@ -19,6 +18,7 @@ export function PremiumHero({
 }) {
   const t = content[locale];
   const fa = locale === 'fa';
+  const whatsappHref = getWhatsAppHref(locale);
 
   return (
     <section className="hero-premium">

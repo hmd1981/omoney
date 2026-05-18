@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MessageCircle } from 'lucide-react';
 import { content } from '../lib/content';
+import { getWhatsAppHref } from '../lib/whatsapp';
 import { AssistantWidget } from './assistant-widget';
 import { SiteHeaderAuth } from './site-header-auth';
 import { SiteMobileNav } from './site-mobile-nav';
@@ -9,7 +10,7 @@ import { SiteMobileNav } from './site-mobile-nav';
 export function SiteShell({ locale, children }: { locale: keyof typeof content; children: React.ReactNode }) {
   const t = content[locale];
   const alternateLocale = locale === 'fa' ? 'en' : 'fa';
-  const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
+  const whatsappHref = getWhatsAppHref(locale);
   return (
     <main dir={t.dir} className="min-h-screen">
       <header className="site-header text-white">

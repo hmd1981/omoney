@@ -7,10 +7,11 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards
 } from '@nestjs/common';
 import { AdminRole } from '@prisma/client';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -27,6 +28,8 @@ import { UpdateSupportTicketDto } from './dto/update-support-ticket.dto';
 import { UpdateExchangeRateSettingsDto } from './dto/update-exchange-rate-settings.dto';
 import { UpsertExchangeRateOverrideDto } from './dto/upsert-exchange-rate-override.dto';
 import { CreateOrderNoteDto } from './dto/create-order-note.dto';
+import { ListLedgerDto } from './dto/list-ledger.dto';
+import { ReportQueryDto } from './dto/report-query.dto';
 
 type AdminRequest = Request & { user: { sub: string; email: string; role: AdminRole } };
 
@@ -79,6 +82,50 @@ export class AdminController {
   @Roles(AdminRole.SUPER_ADMIN)
   revokeSession(@Param('id') id: string, @Req() request: AdminRequest) {
     return this.admin.revokeSession(id, request.user, clientIp(request));
+  }
+
+  @Get('currencies')
+  @Roles(
+    AdminRole.SUPER_ADMIN,
+    AdminRole.FINANCE_MANAGER,
+    AdminRole.KYC_REVIEWER,
+    AdminRole.SUPPORT_AGENT,
+    AdminRole.AUDITOR
+  )
+  listCurrencies() {
+    return this.admin.listCurrencies();
+  }
+
+  @Get('ledger')
+  @Roles(AdminRole.SUPER_ADMIN, AdminRole.FINANCE_MANAGER, AdminRole.AUDITOR)
+  listLedger(@Query() query: ListLedgerDto) {
+    return this.admin.listLedger(query);
+  }
+
+  @Get('ledger/export')
+  @Roles(AdminRole.SUPER_ADMIN, AdminRole.FINANCE_MANAGER, AdminRole.AUDITOR)
+  exportLedger(
+    @Query() query: ListLedgerDto & { format?: string },
+    @Res() res: Response
+  ) {
+    const { format, ...ledgerQuery } = query;
+    return this.admin.exportLedger(res, ledgerQuery as ListLedgerDto, format || 'csv');
+  }
+
+  @Get('reports/summary')
+  @Roles(AdminRole.SUPER_ADMIN, AdminRole.FINANCE_MANAGER, AdminRole.AUDITOR)
+  reportSummary(@Query() query: ReportQueryDto) {
+    return this.admin.reportSummary(query);
+  }
+
+  @Get('reports/export')
+  @Roles(AdminRole.SUPER_ADMIN, AdminRole.FINANCE_MANAGER, AdminRole.AUDITOR)
+  exportReport(
+    @Query() query: ReportQueryDto & { format?: string },
+    @Res() res: Response
+  ) {
+    const { format, ...reportQuery } = query;
+    return this.admin.exportReport(res, reportQuery as ReportQueryDto, format || 'csv');
   }
 
   @Get('orders')
