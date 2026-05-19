@@ -1,7 +1,15 @@
 import { SiteShell } from '../../../components/site-shell';
 import { AccountDashboard } from '../../../components/account-dashboard';
+import { Locale } from '../../../lib/i18n';
 
-export default async function Dashboard({ params }: { params: Promise<{ locale: 'fa' | 'en' }> }) {
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false
+  }
+};
+
+export default async function Dashboard({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   return (
     <SiteShell locale={locale}>
