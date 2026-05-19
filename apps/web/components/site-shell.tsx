@@ -1,37 +1,41 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { MessageCircle } from 'lucide-react';
 import { content } from '../lib/content';
 import { Locale } from '../lib/i18n';
-import { AssistantWidgetEntry } from './assistant-widget-entry';
+import { getWhatsAppHref } from '../lib/whatsapp';
+import { AssistantWidget } from './assistant-widget';
 import { LanguageSwitcher } from './language-switcher';
+import { SiteHeaderAuth } from './site-header-auth';
+import { SiteMobileNav } from './site-mobile-nav';
+
+function brandLabel(locale: Locale) {
+  if (locale === 'fa') return 'اومانی';
+  if (locale === 'ar') return 'أوماني';
+  return 'OMoney';
+}
 
 export function SiteShell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
   const t = content[locale];
-  const whatsappHref = 'https://wa.me/message/NBV22R27A46TB1';
-  const brandText = locale === 'en' ? 'Money' : locale === 'ar' ? 'ماني' : 'مانی';
+  const whatsappHref = getWhatsAppHref(locale);
+  const brand = brandLabel(locale);
+
   return (
     <main dir={t.dir} className="min-h-screen">
-      <header className="border-b border-white/10 bg-[#0b1624] text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
-          <Link href={`/${locale}`} className="flex items-center gap-3">
-            <span className="brand-mark grid h-12 w-12 place-items-center rounded-md border border-[#c7a15b]/45 bg-white/5 text-2xl font-semibold text-[#dec58d]">
-              O
-            </span>
-            <span>
-              <span className={`brand-wordmark flex items-center text-xl font-semibold ${locale === 'en' ? 'gap-1' : 'flex-row-reverse justify-end gap-2'}`}>
-                {locale === 'en' ? (
-                  <>
-                    <span className="brand-letter text-3xl text-[#dec58d]">O</span>
-                    <span>{brandText}</span>
-                  </>
-                ) : (
-                  <>
-                    <span>{brandText}</span>
-                    <span className="brand-letter text-3xl text-[#dec58d]">O</span>
-                  </>
-                )}
-              </span>
-              <span className="block text-xs text-white/55">International Remittance</span>
+      <header className="site-header text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:py-4 md:px-6">
+          <Link href={`/${locale}`} className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <Image
+              src="/images/omoney-logo.png"
+              alt={locale === 'fa' ? 'لوگوی اومانی' : locale === 'ar' ? 'شعار أوماني' : 'OMoney logo'}
+              width={52}
+              height={52}
+              priority
+              className="brand-logo h-10 w-10 shrink-0 object-contain sm:h-[52px] sm:w-[52px]"
+            />
+            <span className="min-w-0">
+              <span className="brand-wordmark block truncate text-lg font-semibold text-[#f5ecd4] sm:text-xl">{brand}</span>
+              <span className="hidden text-xs text-white/55 sm:block">International Remittance</span>
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm text-white/75 lg:flex">
@@ -41,19 +45,25 @@ export function SiteShell({ locale, children }: { locale: Locale; children: Reac
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher locale={locale} />
-            <a
-              href={whatsappHref}
-              className="hidden rounded-md bg-[#c7a15b] px-4 py-2 text-sm font-medium text-[#0b1624] transition hover:bg-[#dec58d] sm:inline-flex"
-            >
-              WhatsApp
-            </a>
+          <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
+            <div className="hidden items-center gap-2 sm:flex">
+              <SiteHeaderAuth locale={locale} />
+              <LanguageSwitcher locale={locale} />
+              <a
+                href={whatsappHref}
+                className="hidden rounded-md bg-[#c7a15b] px-4 py-2 text-sm font-medium text-[#0b1624] transition hover:bg-[#dec58d] md:inline-flex"
+              >
+                WhatsApp
+              </a>
+            </div>
+            <SiteMobileNav locale={locale} nav={t.nav} whatsappHref={whatsappHref}>
+              <SiteHeaderAuth locale={locale} />
+            </SiteMobileNav>
           </div>
         </div>
       </header>
       {children}
-      <AssistantWidgetEntry locale={locale} />
+      <AssistantWidget locale={locale} />
       <a
         className="fixed bottom-5 end-5 z-20 inline-flex items-center gap-2 rounded-md bg-[#0b1624] px-4 py-3 text-sm font-medium text-white shadow-2xl transition hover:bg-[#16263b]"
         href={whatsappHref}

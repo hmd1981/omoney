@@ -35,7 +35,7 @@ type SiteContent = {
 export const content: Record<Locale, SiteContent> = {
   fa: {
     dir: 'rtl',
-    brand: 'او مانی',
+    brand: 'اومانی',
     meta: {
       title: 'اومانی | صرافی و حواله بین‌المللی',
       description: 'اومانی، مسیر مطمئن تبادل ارز و انتقال بین‌المللی پول میان عمان، امارات، ترکیه و بازارهای جهانی.'

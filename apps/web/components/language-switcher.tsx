@@ -15,7 +15,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
         <Link
           key={item}
           href={`/${item}${rest}`}
-          className={`px-3 py-2 text-sm transition ${
+          className={`px-2.5 py-2 text-sm transition sm:px-3 ${
             item === locale ? 'bg-white/12 text-white' : 'text-white/70 hover:bg-white/8 hover:text-white'
           }`}
         >

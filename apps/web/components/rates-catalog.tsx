@@ -1,5 +1,4 @@
 import { Locale, intlLocale } from '../lib/i18n';
-
 type CatalogRate = {
   code: string;
   marketRateToman: number;
@@ -12,91 +11,53 @@ type CatalogRate = {
 
 const apiBase = process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-const names: Record<Locale, Record<string, string>> = {
-  fa: {
-    AED: 'درهم امارات',
-    BCH: 'بیت کوین کش',
-    BNB: 'بایننس کوین',
-    BTC: 'بیت کوین',
-    DOGE: 'دوج کوین',
-    EUR: 'یورو',
-    ETH: 'اتریوم',
-    GBP: 'پوند انگلیس',
-    JPY: 'ین ژاپن',
-    LTC: 'لایت کوین',
-    TRY: 'لیر ترکیه',
-    USD: 'دلار آمریکا',
-    USDT: 'تتر',
-    XRP: 'ریپل',
-    '18AYAR': 'طلای ۱۸ عیار',
-    SEKKEH: 'سکه امامی',
-    BAHAR: 'سکه بهار آزادی',
-    NIM: 'نیم سکه',
-    ROB: 'ربع سکه'
-  },
-  en: {
-    AED: 'UAE Dirham',
-    BCH: 'Bitcoin Cash',
-    BNB: 'BNB',
-    BTC: 'Bitcoin',
-    DOGE: 'Dogecoin',
-    EUR: 'Euro',
-    ETH: 'Ethereum',
-    GBP: 'British Pound',
-    JPY: 'Japanese Yen',
-    LTC: 'Litecoin',
-    TRY: 'Turkish Lira',
-    USD: 'US Dollar',
-    USDT: 'Tether',
-    XRP: 'XRP',
-    '18AYAR': '18K Gold',
-    SEKKEH: 'Emami Coin',
-    BAHAR: 'Bahar Azadi Coin',
-    NIM: 'Half Coin',
-    ROB: 'Quarter Coin'
-  },
-  ar: {
-    AED: 'الدرهم الإماراتي',
-    BCH: 'بيتكوين كاش',
-    BNB: 'عملة بایننس',
-    BTC: 'بيتكوين',
-    DOGE: 'دوجكوين',
-    EUR: 'اليورو',
-    ETH: 'إيثريوم',
-    GBP: 'الجنيه الإسترليني',
-    JPY: 'الين الياباني',
-    LTC: 'لايتكوين',
-    TRY: 'الليرة التركية',
-    USD: 'الدولار الأمريكي',
-    USDT: 'تيثر',
-    XRP: 'ريبل',
-    '18AYAR': 'ذهب عيار 18',
-    SEKKEH: 'سكة إمامي',
-    BAHAR: 'سكة بهار آزادي',
-    NIM: 'نصف سكة',
-    ROB: 'ربع سكة'
-  }
+const faNames: Record<string, string> = {
+  AED: 'درهم امارات',
+  BCH: 'بیت کوین کش',
+  BNB: 'بایننس کوین',
+  BTC: 'بیت کوین',
+  DOGE: 'دوج کوین',
+  EUR: 'یورو',
+  ETH: 'اتریوم',
+  GBP: 'پوند انگلیس',
+  JPY: 'ین ژاپن',
+  LTC: 'لایت کوین',
+  TRY: 'لیر ترکیه',
+  USD: 'دلار آمریکا',
+  USDT: 'تتر',
+  XRP: 'ریپل',
+  '18AYAR': 'طلای ۱۸ عیار',
+  SEKKEH: 'سکه امامی',
+  BAHAR: 'سکه بهار آزادی',
+  NIM: 'نیم سکه',
+  ROB: 'ربع سکه'
 };
 
-const copy = {
-  groups: {
-    currency: { fa: 'ارزهای اصلی', en: 'Major currencies', ar: 'العملات الرئيسية' },
-    digital: { fa: 'ارزهای دیجیتال', en: 'Digital assets', ar: 'الأصول الرقمية' },
-    gold: { fa: 'طلا و سکه', en: 'Gold and coins', ar: 'الذهب والعملات الذهبية' }
-  },
-  unavailable: {
-    fa: 'دریافت نرخ‌ها موقتاً ممکن نیست.',
-    en: 'Rates are temporarily unavailable.',
-    ar: 'لا يمكن عرض الأسعار مؤقتاً.'
-  },
-  live: { fa: 'نرخ زنده بازار', en: 'Live market rates', ar: 'أسعار السوق المباشرة' },
-  toman: { fa: 'تومان', en: 'Toman', ar: 'تومان' },
-  noChange: { fa: 'بدون تغییر', en: 'No change', ar: 'بدون تغيير' }
+const enNames: Record<string, string> = {
+  AED: 'UAE Dirham',
+  BCH: 'Bitcoin Cash',
+  BNB: 'BNB',
+  BTC: 'Bitcoin',
+  DOGE: 'Dogecoin',
+  EUR: 'Euro',
+  ETH: 'Ethereum',
+  GBP: 'British Pound',
+  JPY: 'Japanese Yen',
+  LTC: 'Litecoin',
+  TRY: 'Turkish Lira',
+  USD: 'US Dollar',
+  USDT: 'Tether',
+  XRP: 'XRP',
+  '18AYAR': '18K Gold',
+  SEKKEH: 'Emami Coin',
+  BAHAR: 'Bahar Azadi Coin',
+  NIM: 'Half Coin',
+  ROB: 'Quarter Coin'
 };
 
 async function getCatalog() {
   try {
-    const response = await fetch(`${apiBase}/exchange-rates/catalog`, { cache: 'no-store' });
+    const response = await fetch(`${apiBase}/exchange-rates/catalog`, { next: { revalidate: 60 } });
     if (!response.ok) return [] as CatalogRate[];
     return (await response.json()) as CatalogRate[];
   } catch {
@@ -110,14 +71,19 @@ function formatNumber(value: number, locale: Locale) {
 
 export async function RatesCatalog({ locale }: { locale: Locale }) {
   const rates = await getCatalog();
+  const fa = locale === 'fa';
   const groups = [
-    { key: 'currency', title: copy.groups.currency[locale] },
-    { key: 'digital', title: copy.groups.digital[locale] },
-    { key: 'gold', title: copy.groups.gold[locale] }
+    { key: 'currency', title: fa ? 'ارزهای اصلی' : 'Major currencies' },
+    { key: 'digital', title: fa ? 'ارزهای دیجیتال' : 'Digital assets' },
+    { key: 'gold', title: fa ? 'طلا و سکه' : 'Gold and coins' }
   ] as const;
 
   if (!rates.length) {
-    return <div className="surface rounded-md p-6 text-[#66707d]">{copy.unavailable[locale]}</div>;
+    return (
+      <div className="surface rounded-md p-6 text-[#66707d]">
+        {fa ? 'دریافت نرخ‌ها موقتاً ممکن نیست.' : 'Rates are temporarily unavailable.'}
+      </div>
+    );
   }
 
   return (
@@ -128,7 +94,7 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
         return (
           <section key={group.key}>
             <div className="mb-4">
-              <p className="eyebrow text-sm">{copy.live[locale]}</p>
+              <p className="eyebrow text-sm">{fa ? 'نرخ زنده بازار' : 'Live market rates'}</p>
               <h2 className="mt-2 text-2xl font-semibold text-[#101e30]">{group.title}</h2>
             </div>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -136,21 +102,25 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
                 <article key={rate.code} className="surface rounded-md p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-[#101e30]">{names[locale][rate.code] ?? rate.code}</p>
+                      <p className="font-semibold text-[#101e30]">
+                        {(fa ? faNames : enNames)[rate.code] ?? rate.code}
+                      </p>
                       <p className="mt-1 text-sm text-[#66707d]">{rate.code}</p>
                     </div>
                     <span className="rounded-full bg-[#f3ead8] px-2.5 py-1 text-xs text-[#8a6421]">
-                      {copy.toman[locale]}
+                      {fa ? 'تومان' : 'Toman'}
                     </span>
                   </div>
                   <p className="mt-5 text-2xl font-semibold text-[#101e30]">
                     {formatNumber(rate.marketRateToman, locale)}
                   </p>
-                  <div className="mt-4 flex items-center justify-between text-xs text-[#66707d]">
-                    <span>{rate.sourceKey}</span>
-                    <span>
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-black/10 pt-3 text-xs text-[#66707d]">
+                    <span className="rounded-full bg-black/[0.04] px-2.5 py-1 font-sans uppercase tracking-wide">
+                      {rate.sourceKey}
+                    </span>
+                    <span className="rounded-full bg-[#f8f0df] px-2.5 py-1 text-[#8a6421]">
                       {rate.changeAmountToman === null
-                        ? copy.noChange[locale]
+                        ? fa ? 'بدون تغییر' : 'No change'
                         : `${rate.changeAmountToman > 0 ? '+' : ''}${formatNumber(rate.changeAmountToman, locale)}`}
                     </span>
                   </div>

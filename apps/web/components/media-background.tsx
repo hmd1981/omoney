@@ -1,7 +1,42 @@
 import { CmsMedia } from '../lib/media';
 
-export function MediaBackground({ media, eager = false }: { media?: CmsMedia; eager?: boolean }) {
-  if (!media) return null;
+type StaticFallback = {
+  jpg: string;
+  webp?: string;
+  overlayOpacity?: number;
+};
+
+export function MediaBackground({
+  media,
+  eager = false,
+  fallback
+}: {
+  media?: CmsMedia;
+  eager?: boolean;
+  fallback?: StaticFallback;
+}) {
+  if (!media?.fileUrl) {
+    if (!fallback) return null;
+
+    return (
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <picture>
+          {fallback.webp ? <source type="image/webp" srcSet={fallback.webp} /> : null}
+          <img
+            src={fallback.jpg}
+            alt=""
+            className="h-full w-full object-cover"
+            loading={eager ? 'eager' : 'lazy'}
+          />
+        </picture>
+        <div
+          className="absolute inset-0 bg-[#08111d]"
+          style={{ opacity: fallback.overlayOpacity ?? 0.55 }}
+        />
+      </div>
+    );
+  }
+
   const objectPosition = media.focalPoint?.x !== undefined && media.focalPoint?.y !== undefined
     ? `${media.focalPoint.x}% ${media.focalPoint.y}%`
     : 'center';
@@ -31,8 +66,6 @@ export function MediaBackground({ media, eager = false }: { media?: CmsMedia; ea
             className="h-full w-full object-cover"
             style={{ objectPosition }}
             loading={eager ? 'eager' : 'lazy'}
-            fetchPriority={eager ? 'high' : 'low'}
-            decoding="async"
           />
         </picture>
       )}
