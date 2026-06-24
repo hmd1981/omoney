@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -16,9 +17,23 @@ import { SiteShell } from '../../../components/site-shell';
 import { MediaBackground } from '../../../components/media-background';
 import { RatesCatalog } from '../../../components/rates-catalog';
 import { CinematicBackground } from '../../../components/cinematic-background';
+import { CorridorGuideContent } from '../../../components/corridor-guide-content';
 import { content } from '../../../lib/content';
+import {
+  corridorGuides,
+  guideMeta,
+  guideScenes,
+  isGuideSlug
+} from '../../../lib/corridor-guides';
 import { getMediaPlacements } from '../../../lib/media';
-import { Locale } from '../../../lib/i18n';
+import { isLocale, Locale } from '../../../lib/i18n';
+import {
+  absoluteUrl,
+  languageAlternates,
+  localizedPath,
+  pageMetadata,
+  type PublicPage
+} from '../../../lib/seo';
 import { getWhatsAppHref } from '../../../lib/whatsapp';
 
 const pages = {
@@ -29,7 +44,10 @@ const pages = {
     faq: 'سوالات متداول',
     contact: 'تماس',
     terms: 'قوانین',
-    privacy: 'حریم خصوصی'
+    privacy: 'حریم خصوصی',
+    'oman-remittance': 'راهنمای حواله عمان',
+    'dubai-remittance': 'راهنمای حواله دبی',
+    'turkey-remittance': 'راهنمای حواله ترکیه'
   },
   en: {
     about: 'About OMoney',
@@ -38,7 +56,10 @@ const pages = {
     faq: 'FAQ',
     contact: 'Contact',
     terms: 'Terms',
-    privacy: 'Privacy'
+    privacy: 'Privacy',
+    'oman-remittance': 'Oman remittance guide',
+    'dubai-remittance': 'Dubai remittance guide',
+    'turkey-remittance': 'Turkey remittance guide'
   },
   ar: {
     about: 'من نحن',
@@ -47,9 +68,53 @@ const pages = {
     faq: 'الأسئلة الشائعة',
     contact: 'تواصل معنا',
     terms: 'الشروط',
-    privacy: 'الخصوصية'
+    privacy: 'الخصوصية',
+    'oman-remittance': 'دليل تحويلات عُمان',
+    'dubai-remittance': 'دليل تحويلات دبي',
+    'turkey-remittance': 'دليل تحويلات تركيا'
   }
 } as const;
+
+const corePublicPages: PublicPage[] = ['about', 'services', 'rates', 'faq', 'contact', 'terms', 'privacy'];
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string; page: string }>;
+}): Promise<Metadata> {
+  const { locale: raw, page } = await params;
+  if (!isLocale(raw)) return {};
+  const locale = raw;
+
+  if (isGuideSlug(page)) {
+    const meta = guideMeta[locale][page];
+    return {
+      title: meta.title,
+      description: meta.description,
+      alternates: {
+        canonical: absoluteUrl(localizedPath(locale, page)),
+        languages: {
+          ...languageAlternates(page),
+          'x-default': absoluteUrl(localizedPath('fa', page))
+        }
+      },
+      openGraph: {
+        title: meta.title,
+        description: meta.description,
+        url: absoluteUrl(localizedPath(locale, page)),
+        siteName: 'OMoney',
+        locale,
+        type: 'article'
+      }
+    };
+  }
+
+  if (corePublicPages.includes(page as PublicPage)) {
+    return pageMetadata(locale, page as PublicPage);
+  }
+
+  return {};
+}
 
 const services = {
   fa: [
@@ -795,6 +860,21 @@ export default async function StaticPage({
             </div>
           </div>
         </section>
+      ) : isGuideSlug(page) ? (
+        <section className="hero-premium min-h-[520px]">
+          <CinematicBackground variant="hero" scene={guideScenes[page]} priority />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 md:px-6 lg:py-20">
+            <div className="max-w-4xl">
+              <p className="eyebrow text-[#dec58d]">{corridorGuides[page][locale].kicker}</p>
+              <h1 className="mt-5 text-4xl font-semibold leading-[1.15] text-white md:text-6xl">
+                {corridorGuides[page][locale].title}
+              </h1>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-white/72 md:text-lg">
+                {corridorGuides[page][locale].copy}
+              </p>
+            </div>
+          </div>
+        </section>
       ) : page === 'contact' ? (
         <section className="hero-premium min-h-[520px]">
           <CinematicBackground variant="hero" scene="global" priority />
@@ -919,6 +999,8 @@ export default async function StaticPage({
       {page === 'faq' && <FaqContent locale={locale} />}
 
       {page === 'contact' && <ContactContent locale={locale} />}
+
+      {isGuideSlug(page) && <CorridorGuideContent locale={locale} slug={page} />}
 
       {(page === 'terms' || page === 'privacy') && <LegalContent locale={locale} page={page} />}
 

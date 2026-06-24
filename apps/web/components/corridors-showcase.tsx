@@ -1,5 +1,7 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { corridorShowcase, content } from '../lib/content';
+import { cityToGuideSlug } from '../lib/corridor-guides';
 import { corridorImageWebp } from '../lib/visual-assets';
 import { MediaBackground } from './media-background';
 import type { MediaPlacementMap } from '../lib/media';
@@ -28,8 +30,9 @@ export function CorridorsShowcase({
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {corridors.map((corridor) => {
             const webp = corridorImageWebp(corridor.city);
+            const guideSlug = cityToGuideSlug[corridor.city];
             return (
-              <article key={corridor.city} className="corridor-card">
+              <Link key={corridor.city} href={`/${locale}/${guideSlug}`} className="corridor-card block">
                 <div className="corridor-card__media relative min-h-[220px]">
                   <Image
                     src={webp}
@@ -48,8 +51,11 @@ export function CorridorsShowcase({
                   </span>
                   <h3 className="mt-4 text-xl font-semibold">{corridor.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-white/75">{corridor.copy}</p>
+                  <span className="mt-4 inline-flex text-sm font-semibold text-[#dec58d]">
+                    {locale === 'fa' ? 'مطالعه راهنما →' : locale === 'ar' ? 'اقرأ الدليل →' : 'Read guide →'}
+                  </span>
                 </div>
-              </article>
+              </Link>
             );
           })}
         </div>

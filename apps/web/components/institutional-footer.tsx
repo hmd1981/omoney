@@ -2,6 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Clock, LockKeyhole, MapPin, MessageCircle } from 'lucide-react';
 import { content } from '../lib/content';
+import { guidePageTitles } from '../lib/corridor-guides';
+import { type Locale } from '../lib/i18n';
 import { getWhatsAppHref } from '../lib/whatsapp';
 import { FooterCinematicLayer } from './footer-cinematic-layer';
 import type { MediaPlacementMap } from '../lib/media';
@@ -28,7 +30,7 @@ export function InstitutionalFooter({
   locale,
   media
 }: {
-  locale: keyof typeof content;
+  locale: Locale;
   media: MediaPlacementMap;
 }) {
   const t = content[locale];
@@ -111,6 +113,16 @@ export function InstitutionalFooter({
                   {t.legal[1]}
                 </Link>
               </li>
+              <li className="pt-2 text-xs uppercase tracking-wider text-[#dec58d]">
+                {locale === 'fa' ? 'راهنمای مسیرها' : locale === 'ar' ? 'أدلة المسارات' : 'Corridor guides'}
+              </li>
+              {(['oman-remittance', 'dubai-remittance', 'turkey-remittance'] as const).map((slug) => (
+                <li key={slug}>
+                  <Link href={`/${locale}/${slug}`} className="transition hover:text-white">
+                    {guidePageTitles[locale][slug]}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
