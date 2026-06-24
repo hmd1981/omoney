@@ -6,6 +6,7 @@ import {
   Banknote,
   Building2,
   ClipboardCheck,
+  Clock,
   FileCheck2,
   Globe2,
   Headset,
@@ -237,6 +238,153 @@ const aboutPage = {
     offices: [
       ['مكتب عُمان', 'مسقط · المقر الرئيسي ومسار تحويلات عُمان'],
       ['مكتب تركيا', 'إسطنبول · مسار تركيا وأوروبا']
+    ]
+  }
+} as const;
+
+const contactPage = {
+  fa: {
+    kicker: 'تماس با اومانی',
+    title: 'پشتیبانی انسانی برای حواله، صرافی و مشاوره مسیر انتقال',
+    copy:
+      'تیم اومانی از مسقط، استانبول و کانال‌های ارتباطی بین‌المللی پاسخگوی سوالات شما درباره حواله، تبدیل ارز، مدارک و زمان پردازش است.',
+    introTitle: 'چگونه با اومانی ارتباط بگیرید؟',
+    introBody: [
+      'اومانی یک خدمات صرافی و حواله بین‌المللی با دفتر مرکزی در مسقط است. مشتریان می‌توانند پیش از ثبت درخواست، درباره مسیر انتقال، نرخ تقریبی، مدارک مورد نیاز و زمان پردازش با کارشناسان ما صحبت کنند. برخلاف سامانه‌های کاملاً خودکار، هر درخواست توسط تیم عملیاتی بررسی می‌شود.',
+      'برای سوالات فوری و هماهنگی روزانه، واتساپ و تماس تلفنی سریع‌ترین راه‌های ارتباطی هستند. برای ارسال مدارک یا پیگیری رسمی، ایمیل و ثبت درخواست در پلتفرم نیز در دسترس است. لطفاً اطلاعات حساس را فقط از طریق کانال‌های رسمی اومانی به اشتراک بگذارید.',
+      'ساعات پاسخگویی تیم پشتیبانی شنبه تا پنج‌شنبه، ۹:۰۰ تا ۱۸:۰۰ به وقت مسقط (GST) است. درخواست‌های ثبت‌شده خارج از این بازه در اولین روز کاری بررسی می‌شوند.'
+    ],
+    hoursLabel: 'ساعات پاسخگویی',
+    hoursDetail: 'شنبه تا پنج‌شنبه · ۹:۰۰ – ۱۸:۰۰ (GST)',
+    prepareTitle: 'قبل از تماس، این موارد را آماده کنید',
+    prepareItems: [
+      'کشور مبدأ و مقصد انتقال',
+      'ارز و مبلغ تقریبی',
+      'نوع خدمات (حواله، تبدیل ارز یا مشاوره)',
+      'مدارک هویتی در دسترس (در صورت آماده بودن)'
+    ],
+    responseTitle: 'زمان پاسخ و پیگیری',
+    responseCopy:
+      'پیام‌های واتساپ و تماس‌های تلفنی در ساعات اداری معمولاً در همان روز پاسخ داده می‌شوند. درخواست‌های ثبت‌شده در پلتفرم پس از بررسی اولیه، وضعیت مرحله‌به‌مرحله دریافت می‌کنند.',
+    officesTitle: 'دفاتر و موقعیت مکانی',
+    offices: [
+      ['دفتر عمان', 'مسقط · دفتر مرکزی و مسیر حواله عمان'],
+      ['دفتر ترکیه', 'استانبول · مسیر ترکیه و اروپا']
+    ]
+  },
+  en: {
+    kicker: 'Contact OMoney',
+    title: 'Human support for remittance, exchange, and transfer route advisory',
+    copy:
+      'The OMoney team in Muscat and Istanbul responds to questions about remittance, currency exchange, documents, and processing times through official channels.',
+    introTitle: 'How to reach OMoney',
+    introBody: [
+      'OMoney is an exchange and international remittance service headquartered in Muscat. Clients can speak with our specialists before submitting a request about transfer corridors, indicative rates, required documents, and expected processing time. Unlike fully automated systems, every request is reviewed by the operations team.',
+      'For urgent questions and day-to-day coordination, WhatsApp and phone are the fastest contact routes. Email and platform requests are also available for formal follow-up and document sharing. Please share sensitive information only through official OMoney channels.',
+      'Support hours are Saturday to Thursday, 9:00–18:00 Muscat time (GST). Requests received outside these hours are reviewed on the next business day.'
+    ],
+    hoursLabel: 'Support hours',
+    hoursDetail: 'Sat–Thu · 9:00 – 18:00 (GST)',
+    prepareTitle: 'Before you contact us, prepare',
+    prepareItems: [
+      'Origin and destination country',
+      'Currency and approximate amount',
+      'Service type (remittance, exchange, or advisory)',
+      'Identity documents if available'
+    ],
+    responseTitle: 'Response time and follow-up',
+    responseCopy:
+      'WhatsApp messages and phone calls during business hours are usually answered the same day. Platform requests receive stage-by-stage status updates after initial review.',
+    officesTitle: 'Offices and locations',
+    offices: [
+      ['Oman office', 'Muscat · Headquarters and Oman remittance corridor'],
+      ['Turkey office', 'Istanbul · Turkey and Europe corridor']
+    ]
+  },
+  ar: {
+    kicker: 'تواصل مع أوماني',
+    title: 'دعم بشري للتحويلات والصرافة واستشارة مسار التحويل',
+    copy:
+      'يرد فريق أوماني من مسقط وإسطنبول على أسئلتكم حول التحويلات وصرف العملات والمستندات ومدة المعالجة عبر القنوات الرسمية.',
+    introTitle: 'كيف تتواصل مع أوماني؟',
+    introBody: [
+      'أوماني خدمة صرافة وتحويلات دولية يقع مقرها في مسقط. يمكن للعملاء التحدث مع مختصينا قبل تسجيل الطلب بشأن مسار التحويل والسعر التقريبي والمستندات المطلوبة والمدة المتوقعة. بخلاف الأنظمة الآلية بالكامل، تتم مراجعة كل طلب من قبل فريق العمليات.',
+      'للأسئلة العاجلة والتنسيق اليومي، واتساب والهاتف هما أسرع وسائل التواصل. البريد الإلكتروني وتسجيل الطلب على المنصة متاحان أيضاً للمتابعة الرسمية. يرجى مشاركة المعلومات الحساسة فقط عبر قنوات أوماني الرسمية.',
+      'ساعات الدعم من السبت إلى الخميس، 9:00–18:00 بتوقيت مسقط (GST). تُراجع الطلبات المستلمة خارج هذه الأوقات في أول يوم عمل.'
+    ],
+    hoursLabel: 'ساعات الدعم',
+    hoursDetail: 'السبت–الخميس · 9:00 – 18:00 GST',
+    prepareTitle: 'قبل التواصل، جهّز',
+    prepareItems: [
+      'بلد الإرسال والاستلام',
+      'العملة والمبلغ التقريبي',
+      'نوع الخدمة (تحويل، صرف أو استشارة)',
+      'مستندات الهوية إن توفرت'
+    ],
+    responseTitle: 'وقت الرد والمتابعة',
+    responseCopy:
+      'تُرد رسائل واتساب والمكالمات خلال ساعات العمل عادة في نفس اليوم. تتلقى الطلبات المسجلة على المنصة تحديثات مرحلية بعد المراجعة الأولية.',
+    officesTitle: 'المكاتب والمواقع',
+    offices: [
+      ['مكتب عُمان', 'مسقط · المقر الرئيسي ومسار تحويلات عُمان'],
+      ['مكتب تركيا', 'إسطنبول · مسار تركيا وأوروبا']
+    ]
+  }
+} as const;
+
+const ratesGuide = {
+  fa: {
+    marketTitle: 'نرخ‌های بازار و نرخ نهایی خدمات',
+    marketBody: [
+      'نرخ‌های نمایش‌داده‌شده در این صفحه بازتاب شرایط بازار ارز، طلا و دارایی‌های دیجیتال منتخب است و به‌صورت دوره‌ای به‌روزرسانی می‌شود. این نرخ‌ها برای آشنایی اولیه و مقایسه بازار طراحی شده‌اند.',
+      'نرخ نهایی حواله یا تبدیل ارز در اومانی پس از بررسی مبلغ، مسیر، زمان اجرا، نقدشوندگی و تأیید تیم مالی تعیین می‌شود. بنابراین ممکن است نرخ اجرای خدمات با نرخ مرجع بازار در صفحه متفاوت باشد.',
+      'برای مبالغ بالا یا مسیرهای خاص، تیم مالی می‌تواند نرخ اختصاصی و زمان اجرای دقیق‌تری ارائه کند. پیش از هر تراکنش، نرخ قطعی و شرایط پردازش توسط پشتیبانی اعلام می‌شود.'
+    ],
+    goldTitle: 'طلا، سکه و دارایی‌های دیجیتال',
+    goldBody: [
+      'بخش طلا و سکه قیمت‌های مرجع بازار داخلی را نشان می‌دهد و برای مشتریانی که به دنبال اطلاع از روند قیمت هستند مفید است. خرید و فروش طلا و سکه تابع شرایط بازار و قوانین محلی است.',
+      'ارزهای دیجیتال منتخب در این صفحه صرفاً برای اطلاع‌رسانی بازار نمایش داده می‌شوند. اومانی یک سرویس حواله و صرافی سنتی است و تمرکز اصلی آن بر انتقال پول واقعی و تبدیل ارز در مسیرهای بین‌المللی است.'
+    ],
+    corridorTitle: 'مسیرهای اصلی و نرخ حواله',
+    corridorBody: [
+      'مسیرهای پرتقاضای اومانی شامل عمان، امارات، ترکیه، ایران و مقاصد منتخب بین‌المللی است. نرخ هر مسیر به عوامل مختلفی مانند هزینه اجرا، زمان تحویل و شرایط انطباق بستگی دارد.',
+      'اگر مسیر مورد نظر شما در سایت فهرست نشده، با پشتیبانی تماس بگیرید. بسیاری از مسیرها پس از بررسی عملیاتی قابل انجام هستند. برای مشاوره قبل از ثبت درخواست، صفحه سوالات متداول و تماس با ما را ببینید.'
+    ]
+  },
+  en: {
+    marketTitle: 'Market rates vs final service rates',
+    marketBody: [
+      'Rates shown on this page reflect market conditions for currencies, gold, and selected digital assets and are updated periodically. They are designed for initial market awareness and comparison.',
+      'Final remittance or exchange execution rates at OMoney are confirmed after review of amount, corridor, timing, liquidity, and finance team approval. Service execution rates may therefore differ from reference market rates on this page.',
+      'For high amounts or special corridors, the finance team can provide a dedicated rate and clearer execution timing. Final rates and processing conditions are confirmed by support before each transaction.'
+    ],
+    goldTitle: 'Gold, coins, and digital assets',
+    goldBody: [
+      'The gold and coin section shows reference domestic market prices useful for clients tracking price trends. Gold and coin transactions depend on market conditions and local regulations.',
+      'Selected digital assets on this page are shown for market information only. OMoney is a traditional remittance and exchange service focused on real money transfer and currency conversion across international corridors.'
+    ],
+    corridorTitle: 'Primary corridors and remittance rates',
+    corridorBody: [
+      'High-demand OMoney corridors include Oman, the UAE, Turkey, Iran, and selected international destinations. Each corridor rate depends on execution cost, delivery timing, and compliance conditions.',
+      'If your corridor is not listed on the site, contact support. Many routes are available after operational review. For pre-request advisory, see our FAQ and contact pages.'
+    ]
+  },
+  ar: {
+    marketTitle: 'أسعار السوق والأسعار النهائية للخدمة',
+    marketBody: [
+      'تعكس الأسعار المعروضة في هذه الصفحة ظروف السوق للعملات والذهب وبعض الأصول الرقمية ويتم تحديثها دورياً. وهي للتعرف الأولي على السوق والمقارنة.',
+      'يتم تأكيد أسعار التحويل أو الصرف النهائية في أوماني بعد مراجعة المبلغ والمسار والتوقيت والسيولة وموافقة فريق المالية. لذلك قد تختلف أسعار تنفيذ الخدمة عن أسعار السوق المرجعية في الصفحة.',
+      'للمبالغ الكبيرة أو المسارات الخاصة، يمكن لفريق المالية تقديم سعر مخصص وتوقيت تنفيذ أوضح. يتم تأكيد السعر النهائي وشروط المعالجة من الدعم قبل كل عملية.'
+    ],
+    goldTitle: 'الذهب والعملات الذهبية والأصول الرقمية',
+    goldBody: [
+      'يعرض قسم الذهب والعملات الذهبية أسعار السوق المحلية المرجعية لمتابعة اتجاهات الأسعار. تعتمد معاملات الذهب والعملات على ظروف السوق واللوائح المحلية.',
+      'تُعرض الأصول الرقمية المختارة في هذه الصفحة للإعلام عن السوق فقط. أوماني خدمة تحويلات وصرافة تقليدية تركز على تحويل الأموال الفعلي وصرف العملات عبر مسارات دولية.'
+    ],
+    corridorTitle: 'المسارات الرئيسية وأسعار التحويل',
+    corridorBody: [
+      'تشمل مسارات أوماني عالية الطلب عُمان والإمارات وتركيا وإيران ومقاصد دولية مختارة. يعتمد سعر كل مسار على تكلفة التنفيذ وتوقيت التسليم وشروط الامتثال.',
+      'إذا لم يكن مسارك مدرجاً على الموقع، تواصل مع الدعم. العديد من المسارات متاحة بعد المراجعة التشغيلية. للاستشارة قبل الطلب، راجع صفحات الأسئلة الشائعة والتواصل.'
     ]
   }
 } as const;
@@ -647,6 +795,47 @@ export default async function StaticPage({
             </div>
           </div>
         </section>
+      ) : page === 'contact' ? (
+        <section className="hero-premium min-h-[520px]">
+          <CinematicBackground variant="hero" scene="global" priority />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 md:px-6 lg:py-20">
+            <div className="max-w-4xl">
+              <p className="eyebrow text-[#dec58d]">{contactPage[locale].kicker}</p>
+              <h1 className="mt-5 text-4xl font-semibold leading-[1.15] text-white md:text-6xl">
+                {contactPage[locale].title}
+              </h1>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-white/72 md:text-lg">{contactPage[locale].copy}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href={whatsappHref} className="btn-primary">
+                  <Headset size={18} />
+                  WhatsApp
+                </a>
+                <a href="mailto:info@omoney.online" className="btn-ghost">
+                  info@omoney.online
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : page === 'rates' ? (
+        <section className="hero-premium min-h-[480px]">
+          <CinematicBackground variant="hero" scene="global" priority />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 md:px-6 lg:py-20">
+            <div className="max-w-4xl">
+              <p className="eyebrow text-[#dec58d]">
+                {fa ? 'نرخ ارز و بازار' : locale === 'ar' ? 'أسعار الصرف والسوق' : 'Rates and markets'}
+              </p>
+              <h1 className="mt-5 text-4xl font-semibold leading-[1.15] text-white md:text-6xl">{title}</h1>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-white/72 md:text-lg">
+                {fa
+                  ? 'نرخ‌های زنده ارزهای اصلی، طلا و سکه و دارایی‌های دیجیتال منتخب. نرخ نهایی حواله و تبدیل ارز پس از تأیید تیم مالی قطعی می‌شود.'
+                  : locale === 'ar'
+                    ? 'أسعار مباشرة للعملات الرئيسية والذهب وبعض الأصول الرقمية. يُؤكد السعر النهائي للتحويل والصرف بعد موافقة فريق المالية.'
+                    : 'Live major currency, gold, coin, and selected digital asset rates. Final remittance and exchange rates are confirmed by the finance team.'}
+              </p>
+            </div>
+          </div>
+        </section>
       ) : (
         <section className="relative isolate overflow-hidden bg-[#0b1624] px-4 py-14 text-white md:px-6">
           <MediaBackground media={heroMedia} eager />
@@ -719,36 +908,230 @@ export default async function StaticPage({
       )}
 
       {page === 'rates' && (
-        <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
-          <div className="mb-8 max-w-3xl">
-            <p className="leading-8 text-[#66707d]">
-              {locale === 'fa'
-                ? 'در این صفحه نرخ‌های زنده ارزهای اصلی، ارزهای دیجیتال منتخب و قیمت طلا و سکه نمایش داده می‌شود. نرخ نهایی خدمات حواله و تبدیل ارز پس از بررسی تیم مالی قطعی می‌شود.'
-                : locale === 'ar'
-                  ? 'تعرض هذه الصفحة أسعار العملات الرئيسية وبعض الأصول الرقمية وأسعار الذهب والعملات الذهبية. يتم تأكيد السعر النهائي بعد مراجعة فريق المالية.'
-                  : 'This page shows live major currencies, selected digital assets, and gold and coin prices. Final remittance and exchange execution rates are confirmed by the finance team.'}
-            </p>
-          </div>
-          <RatesCatalog locale={locale} />
-        </section>
+        <>
+          <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+            <RatesCatalog locale={locale} />
+          </section>
+          <RatesGuideContent locale={locale} />
+        </>
       )}
 
       {page === 'faq' && <FaqContent locale={locale} />}
 
+      {page === 'contact' && <ContactContent locale={locale} />}
+
       {(page === 'terms' || page === 'privacy') && <LegalContent locale={locale} page={page} />}
 
-      {page !== 'services' && page !== 'rates' && page !== 'faq' && page !== 'terms' && page !== 'privacy' && (
-        <section className={page === 'about' ? 'section-band bg-[#fcfbf8]' : 'mx-auto max-w-5xl px-4 py-12 md:px-6'}>
-          {page === 'about' ? (
-            <AboutContent locale={locale} />
-          ) : (
-            <article className="surface rounded-md p-6 leading-8 text-[#66707d]">
-              {rtl ? 'محتوای این صفحه در مرحله تکمیل است.' : 'This page content is being finalized.'}
-            </article>
-          )}
+      {page === 'about' && (
+        <section className="section-band bg-[#fcfbf8]">
+          <AboutContent locale={locale} />
         </section>
       )}
     </SiteShell>
+  );
+}
+
+function ContactContent({ locale }: { locale: keyof typeof pages }) {
+  const rtl = locale !== 'en';
+  const contact = contactPage[locale];
+  const whatsappHref = getWhatsAppHref(locale);
+
+  return (
+    <>
+      <section className="section-band bg-[#fcfbf8]">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-16 md:px-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <article className="surface rounded-2xl p-6 leading-8 text-[#5f6b78] md:p-8">
+            <p className="eyebrow">{rtl ? 'راهنمای تماس' : 'Contact guidance'}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-[#101e30]">{contact.introTitle}</h2>
+            <div className="mt-6 space-y-5">
+              {contact.introBody.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+            <div className="mt-8 rounded-xl border border-[#c7a15b]/25 bg-[#fff8e8] p-5">
+              <div className="flex items-center gap-3 text-[#7d5b1c]">
+                <Clock size={20} className="shrink-0" />
+                <div>
+                  <p className="font-semibold">{contact.hoursLabel}</p>
+                  <p className="mt-1 text-sm">{contact.hoursDetail}</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div className="space-y-4">
+            <article className="trust-card">
+              <p className="eyebrow">{contact.prepareTitle}</p>
+              <ul className="mt-4 space-y-3 text-[#5f6b78]">
+                {contact.prepareItems.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#c7a15b]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+            <article className="trust-card">
+              <h3 className="text-xl font-semibold text-[#101e30]">{contact.responseTitle}</h3>
+              <p className="mt-3 leading-8 text-[#5f6b78]">{contact.responseCopy}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-dark section-band">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-16 md:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="eyebrow text-[#dec58d]">{rtl ? 'اطلاعات رسمی' : 'Official contact'}</p>
+            <h2 className="mt-3 text-3xl font-semibold md:text-4xl">
+              {rtl ? 'راه‌های ارتباطی با اومانی' : 'OMoney contact channels'}
+            </h2>
+            <p className="mt-4 leading-8 text-white/70">
+              {rtl
+                ? 'برای بررسی مسیر انتقال، مدارک مورد نیاز یا زمان تقریبی پردازش، با تیم پشتیبانی در تماس باشید.'
+                : 'Reach our support team about transfer corridors, required documents, and expected processing times.'}
+            </p>
+            <a href={whatsappHref} className="btn-primary mt-7 inline-flex">
+              <Headset size={18} />
+              WhatsApp
+            </a>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <h3 className="text-xl font-semibold text-white">{rtl ? 'راه‌های ارتباطی' : 'Contact channels'}</h3>
+              <div className="mt-5 space-y-4">
+                {contactItems[locale].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between gap-4 border-b border-white/10 pb-4 last:border-b-0 last:pb-0">
+                    <span className="text-white/60">{label}</span>
+                    <a href={`tel:${value.replaceAll(' ', '')}`} dir="ltr" className="font-sans font-semibold text-white">
+                      {value}
+                    </a>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <span className="text-white/60">{rtl ? 'ایمیل' : 'Email'}</span>
+                  <a href="mailto:info@omoney.online" dir="ltr" className="font-sans font-semibold text-white">
+                    info@omoney.online
+                  </a>
+                </div>
+                <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <span className="text-white/60">{rtl ? 'تلگرام' : 'Telegram'}</span>
+                  <a href="https://t.me/OmoneyEx" target="_blank" rel="noreferrer" dir="ltr" className="font-sans font-semibold text-[#dec58d]">
+                    @OmoneyEx
+                  </a>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-white/60">{rtl ? 'اینستاگرام' : 'Instagram'}</span>
+                  <a
+                    href="https://www.instagram.com/omoney_ex?igsh=MWNxYnY4OTc5OG1oNA%3D%3D&utm_source=qr"
+                    target="_blank"
+                    rel="noreferrer"
+                    dir="ltr"
+                    className="font-sans font-semibold text-[#dec58d]"
+                  >
+                    @omoney_ex
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <figure className="relative min-h-[360px] overflow-hidden rounded-2xl border border-white/10 bg-[#111]">
+              <Image
+                src="/images/offices/consultation-desk.webp"
+                alt={rtl ? 'فضای مشاوره حرفه‌ای اومانی' : 'OMoney professional consultation office'}
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 520px, 100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060d18] via-transparent to-transparent" />
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 text-sm leading-7 text-white/72">
+                {rtl ? 'پشتیبانی انسانی، بررسی مدارک و هماهنگی مسیر انتقال.' : 'Human support, document review, and transfer route coordination.'}
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-band bg-[#fcfbf8]">
+        <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
+          <div className="mb-8 max-w-2xl">
+            <p className="eyebrow">{rtl ? 'حضور عملیاتی' : 'Operational presence'}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-[#101e30]">{contact.officesTitle}</h2>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <OfficeMap
+              title={contact.offices[0][0]}
+              copy={contact.offices[0][1]}
+              eyebrow={rtl ? 'موقعیت دفتر' : 'Office location'}
+              mapTitle={rtl ? 'نقشه دفتر عمان' : 'Oman office map'}
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.3697913581327!2d58.48208117506901!3d23.626924393506066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e91f9a2c012b881%3A0x3c7e13c641358cf!2sEstio%20technology%20development!5e0!3m2!1sen!2som!4v1779019120796!5m2!1sen!2som"
+            />
+            <OfficeMap
+              title={contact.offices[1][0]}
+              copy={contact.offices[1][1]}
+              eyebrow={rtl ? 'موقعیت دفتر' : 'Office location'}
+              mapTitle={rtl ? 'نقشه دفتر ترکیه' : 'Turkey office map'}
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1505.1290785374433!2d28.649634697547093!3d41.01960767853349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b55f602ad1050b%3A0xa853d019647567c4!2zbWFuaWdydXDZhdin2YbbjCDar9ix2YjZvg!5e0!3m2!1sen!2som!4v1779019675440!5m2!1sen!2som"
+            />
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function RatesGuideContent({ locale }: { locale: keyof typeof pages }) {
+  const rtl = locale !== 'en';
+  const guide = ratesGuide[locale];
+
+  return (
+    <>
+      <section className="section-band bg-[#fcfbf8]">
+        <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
+          <div className="grid gap-8 lg:grid-cols-2">
+            <article className="surface rounded-2xl p-6 md:p-8">
+              <p className="eyebrow">{rtl ? 'راهنمای نرخ' : 'Rate guidance'}</p>
+              <h2 className="mt-3 text-2xl font-semibold text-[#101e30] md:text-3xl">{guide.marketTitle}</h2>
+              <div className="mt-5 space-y-4 leading-8 text-[#5f6b78]">
+                {guide.marketBody.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </article>
+            <article className="surface rounded-2xl p-6 md:p-8">
+              <p className="eyebrow">{rtl ? 'طلا و دارایی' : 'Gold and assets'}</p>
+              <h2 className="mt-3 text-2xl font-semibold text-[#101e30] md:text-3xl">{guide.goldTitle}</h2>
+              <div className="mt-5 space-y-4 leading-8 text-[#5f6b78]">
+                {guide.goldBody.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-dark section-band">
+        <div className="mx-auto max-w-4xl px-4 py-14 md:px-6">
+          <p className="eyebrow text-[#dec58d]">{rtl ? 'مسیرهای حواله' : 'Remittance corridors'}</p>
+          <h2 className="mt-3 text-3xl font-semibold">{guide.corridorTitle}</h2>
+          <div className="mt-5 space-y-4 leading-8 text-white/72">
+            {guide.corridorBody.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href={`/${locale}/faq`} className="btn-ghost text-sm">
+              {rtl ? 'سوالات متداول' : 'FAQ'}
+            </Link>
+            <Link href={`/${locale}/contact`} className="btn-primary text-sm">
+              {rtl ? 'تماس با ما' : 'Contact us'}
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 

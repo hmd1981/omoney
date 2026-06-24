@@ -45,6 +45,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'خدمات ما', href: '/fa/services' },
       { label: 'نرخ ارز', href: '/fa/rates' },
       { label: 'سوالات', href: '/fa/faq' },
+      { label: 'تماس', href: '/fa/contact' },
       { label: 'حساب من', href: '/fa/dashboard' }
     ],
     heroKicker: 'صرافی در مسقط و مسیرهای جهانی حواله با استاندارد نهادی',
@@ -83,6 +84,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'Services', href: '/en/services' },
       { label: 'Rates', href: '/en/rates' },
       { label: 'FAQ', href: '/en/faq' },
+      { label: 'Contact', href: '/en/contact' },
       { label: 'My account', href: '/en/dashboard' }
     ],
     heroKicker: 'International remittance with human support',
@@ -121,6 +123,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'خدماتنا', href: '/ar/services' },
       { label: 'أسعار الصرف', href: '/ar/rates' },
       { label: 'الأسئلة الشائعة', href: '/ar/faq' },
+      { label: 'تواصل معنا', href: '/ar/contact' },
       { label: 'حسابي', href: '/ar/dashboard' }
     ],
     heroKicker: 'صرافة في مسقط ومسارات تحويل عالمية بمعايير مؤسسية',
