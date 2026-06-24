@@ -187,6 +187,34 @@ h4 {
   color: #dec58d !important;
 }
 
+/* Hero side panels (about, services, FAQ) — light glass card on dark hero */
+.hero-side-panel {
+  color: var(--graphite);
+}
+
+.hero-side-panel .hero-side-panel__trust {
+  color: #fff;
+}
+
+.hero-side-panel .hero-side-panel__trust h2,
+.hero-side-panel .hero-side-panel__trust h3,
+.hero-side-panel .hero-side-panel__trust p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.hero-side-panel .hero-side-panel__trust h2,
+.hero-side-panel .hero-side-panel__trust h3 {
+  color: #fff !important;
+}
+
+.hero-side-panel .hero-side-panel__stat-value {
+  color: var(--gold-600) !important;
+}
+
+.hero-side-panel .hero-side-panel__stat-label {
+  color: var(--muted) !important;
+}
+
 .hero-premium__bg {
   position: absolute;
   inset: 0;

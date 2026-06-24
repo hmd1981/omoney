@@ -556,15 +556,15 @@ export default async function StaticPage({
                 </a>
               </div>
             </div>
-            <div className="surface-glass rounded-2xl border-white/20 bg-white/10 p-5 text-white shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
-              <div className="rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
+            <div className="hero-side-panel surface-glass rounded-2xl border-white/20 bg-white/10 p-5 shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
+              <div className="hero-side-panel__trust rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
                 <ShieldCheck className="text-[#dec58d]" />
-                <h2 className="mt-4 text-2xl font-semibold text-white">{serviceCopy.trustTitle}</h2>
-                <p className="mt-4 leading-8 text-white/68">{serviceCopy.trustCopy}</p>
+                <h2 className="mt-4 text-2xl font-semibold">{serviceCopy.trustTitle}</h2>
+                <p className="mt-4 leading-8">{serviceCopy.trustCopy}</p>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 {serviceCopy.proof.map((item) => (
-                  <div key={item} className="rounded-xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-white/78">
+                  <div key={item} className="rounded-xl border border-[rgba(16,30,48,0.1)] bg-white/75 px-4 py-3 text-sm text-[#5f6b78]">
                     {item}
                   </div>
                 ))}
@@ -583,17 +583,17 @@ export default async function StaticPage({
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 md:text-lg">{aboutPage[locale].copy}</p>
             </div>
-            <div className="surface-glass rounded-2xl border-white/20 bg-white/10 p-5 text-white shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
-              <div className="rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
+            <div className="hero-side-panel surface-glass rounded-2xl border-white/20 bg-white/10 p-5 shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
+              <div className="hero-side-panel__trust rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
                 <ShieldCheck className="text-[#dec58d]" />
-                <h2 className="mt-4 text-2xl font-semibold text-white">{aboutPage[locale].trustTitle}</h2>
-                <p className="mt-4 leading-8 text-white/68">{aboutPage[locale].trustCopy}</p>
+                <h2 className="mt-4 text-2xl font-semibold">{aboutPage[locale].trustTitle}</h2>
+                <p className="mt-4 leading-8">{aboutPage[locale].trustCopy}</p>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 {aboutPage[locale].stats.map(([value, label]) => (
-                  <div key={value} className="rounded-xl border border-white/10 bg-white/6 px-4 py-3">
-                    <p className="text-lg font-semibold text-[#dec58d]">{value}</p>
-                    <p className="mt-1 text-xs leading-5 text-white/62">{label}</p>
+                  <div key={value} className="rounded-xl border border-[rgba(16,30,48,0.1)] bg-white/75 px-4 py-3">
+                    <p className="hero-side-panel__stat-value text-lg font-semibold">{value}</p>
+                    <p className="hero-side-panel__stat-label mt-1 text-xs leading-5">{label}</p>
                   </div>
                 ))}
               </div>
@@ -618,11 +618,11 @@ export default async function StaticPage({
                 ))}
               </div>
             </div>
-            <div className="surface-glass rounded-2xl border-white/20 bg-white/10 p-5 text-white shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
-              <div className="rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
+            <div className="hero-side-panel surface-glass rounded-2xl border-white/20 bg-white/10 p-5 shadow-[0_28px_80px_rgba(0,0,0,0.28)]">
+              <div className="hero-side-panel__trust rounded-xl border border-white/10 bg-[#06101d]/80 p-5">
                 <Headset className="text-[#dec58d]" />
-                <h2 className="mt-4 text-2xl font-semibold text-white">{faqPage[locale].introTitle}</h2>
-                <p className="mt-4 leading-8 text-white/68">{faqPage[locale].introCopy}</p>
+                <h2 className="mt-4 text-2xl font-semibold">{faqPage[locale].introTitle}</h2>
+                <p className="mt-4 leading-8">{faqPage[locale].introCopy}</p>
               </div>
             </div>
           </div>
