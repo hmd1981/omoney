@@ -55,6 +55,34 @@ const enNames: Record<string, string> = {
   ROB: 'Quarter Coin'
 };
 
+const arNames: Record<string, string> = {
+  AED: 'درهم إماراتي',
+  BCH: 'بيتكوين كاش',
+  BNB: 'بينانس كوين',
+  BTC: 'بيتكوين',
+  DOGE: 'دوجكوين',
+  EUR: 'يورو',
+  ETH: 'إيثيريوم',
+  GBP: 'جنيه إسترليني',
+  JPY: 'ين ياباني',
+  LTC: 'لايتكوين',
+  TRY: 'ليرة تركية',
+  USD: 'دولار أمريكي',
+  USDT: 'تيثر',
+  XRP: 'ريبل',
+  '18AYAR': 'ذهب عيار 18',
+  SEKKEH: 'عملة إمامي',
+  BAHAR: 'سكة بهار آزادي',
+  NIM: 'نصف عملة',
+  ROB: 'ربع عملة'
+};
+
+function assetName(code: string, locale: Locale) {
+  if (locale === 'fa') return faNames[code] ?? code;
+  if (locale === 'ar') return arNames[code] ?? enNames[code] ?? code;
+  return enNames[code] ?? code;
+}
+
 async function getCatalog() {
   try {
     const response = await fetch(`${apiBase}/exchange-rates/catalog`, { next: { revalidate: 60 } });
@@ -72,16 +100,21 @@ function formatNumber(value: number, locale: Locale) {
 export async function RatesCatalog({ locale }: { locale: Locale }) {
   const rates = await getCatalog();
   const fa = locale === 'fa';
+  const ar = locale === 'ar';
   const groups = [
-    { key: 'currency', title: fa ? 'ارزهای اصلی' : 'Major currencies' },
-    { key: 'digital', title: fa ? 'ارزهای دیجیتال' : 'Digital assets' },
-    { key: 'gold', title: fa ? 'طلا و سکه' : 'Gold and coins' }
+    { key: 'currency', title: fa ? 'ارزهای اصلی' : ar ? 'العملات الرئيسية' : 'Major currencies' },
+    { key: 'digital', title: fa ? 'ارزهای دیجیتال' : ar ? 'الأصول الرقمية' : 'Digital assets' },
+    { key: 'gold', title: fa ? 'طلا و سکه' : ar ? 'الذهب والعملات' : 'Gold and coins' }
   ] as const;
 
   if (!rates.length) {
     return (
       <div className="surface rounded-md p-6 text-[#66707d]">
-        {fa ? 'دریافت نرخ‌ها موقتاً ممکن نیست.' : 'Rates are temporarily unavailable.'}
+        {fa
+          ? 'دریافت نرخ‌ها موقتاً ممکن نیست.'
+          : ar
+            ? 'الأسعار غير متاحة مؤقتاً.'
+            : 'Rates are temporarily unavailable.'}
       </div>
     );
   }
@@ -94,7 +127,9 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
         return (
           <section key={group.key}>
             <div className="mb-4">
-              <p className="eyebrow text-sm">{fa ? 'نرخ زنده بازار' : 'Live market rates'}</p>
+              <p className="eyebrow text-sm">
+                {fa ? 'نرخ زنده بازار' : ar ? 'أسعار السوق المباشرة' : 'Live market rates'}
+              </p>
               <h2 className="mt-2 text-2xl font-semibold text-[#101e30]">{group.title}</h2>
             </div>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -102,13 +137,11 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
                 <article key={rate.code} className="surface rounded-md p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-[#101e30]">
-                        {(fa ? faNames : enNames)[rate.code] ?? rate.code}
-                      </p>
+                      <p className="font-semibold text-[#101e30]">{assetName(rate.code, locale)}</p>
                       <p className="mt-1 text-sm text-[#66707d]">{rate.code}</p>
                     </div>
                     <span className="rounded-full bg-[#f3ead8] px-2.5 py-1 text-xs text-[#8a6421]">
-                      {fa ? 'تومان' : 'Toman'}
+                      {fa ? 'تومان' : ar ? 'تومان' : 'Toman'}
                     </span>
                   </div>
                   <p className="mt-5 text-2xl font-semibold text-[#101e30]">
@@ -120,7 +153,11 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
                     </span>
                     <span className="rounded-full bg-[#f8f0df] px-2.5 py-1 text-[#8a6421]">
                       {rate.changeAmountToman === null
-                        ? fa ? 'بدون تغییر' : 'No change'
+                        ? fa
+                          ? 'بدون تغییر'
+                          : ar
+                            ? 'بدون تغيير'
+                            : 'No change'
                         : `${rate.changeAmountToman > 0 ? '+' : ''}${formatNumber(rate.changeAmountToman, locale)}`}
                     </span>
                   </div>

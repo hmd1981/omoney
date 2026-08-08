@@ -45,8 +45,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'خدمات ما', href: '/fa/services' },
       { label: 'نرخ ارز', href: '/fa/rates' },
       { label: 'سوالات', href: '/fa/faq' },
-      { label: 'تماس', href: '/fa/contact' },
-      { label: 'حساب من', href: '/fa/dashboard' }
+      { label: 'تماس', href: '/fa/contact' }
     ],
     heroKicker: 'صرافی در مسقط و مسیرهای جهانی حواله با استاندارد نهادی',
     heroTitle: 'اومانی، مسیر مطمئن تبادل ارز و انتقال بین‌المللی پول میان عمان، امارات، ترکیه و بازارهای جهانی.',
@@ -84,8 +83,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'Services', href: '/en/services' },
       { label: 'Rates', href: '/en/rates' },
       { label: 'FAQ', href: '/en/faq' },
-      { label: 'Contact', href: '/en/contact' },
-      { label: 'My account', href: '/en/dashboard' }
+      { label: 'Contact', href: '/en/contact' }
     ],
     heroKicker: 'International remittance with human support',
     heroTitle: 'Trusted money transfer between Oman, UAE, Turkey, and global corridors',
@@ -123,8 +121,7 @@ export const content: Record<Locale, SiteContent> = {
       { label: 'خدماتنا', href: '/ar/services' },
       { label: 'أسعار الصرف', href: '/ar/rates' },
       { label: 'الأسئلة الشائعة', href: '/ar/faq' },
-      { label: 'تواصل معنا', href: '/ar/contact' },
-      { label: 'حسابي', href: '/ar/dashboard' }
+      { label: 'تواصل معنا', href: '/ar/contact' }
     ],
     heroKicker: 'صرافة في مسقط ومسارات تحويل عالمية بمعايير مؤسسية',
     heroTitle: 'أو ماني، مسارك الموثوق لتبادل العملات والتحويلات المالية الدولية بين عُمان، الإمارات، تركيا والأسواق العالمية.',

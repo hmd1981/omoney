@@ -21,12 +21,13 @@ export function TrustInstitutional({ locale }: { locale: keyof typeof content })
   const t = content[locale];
   const cards = trustCards[locale];
   const fa = locale === 'fa';
+  const ar = locale === 'ar';
 
   return (
     <section className="section-band bg-[#fcfbf8]">
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20">
         <div className="max-w-2xl">
-          <p className="eyebrow">{fa ? 'اعتماد نهادی' : 'Institutional trust'}</p>
+          <p className="eyebrow">{fa ? 'اعتماد نهادی' : ar ? 'ثقة مؤسسية' : 'Institutional trust'}</p>
           <h2 className="mt-3 text-3xl font-semibold md:text-4xl">{t.trustSectionTitle}</h2>
           <p className="mt-4 text-base leading-8 text-[#5f6b78]">{t.trustSectionCopy}</p>
         </div>

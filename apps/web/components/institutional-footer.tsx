@@ -21,8 +21,8 @@ const offices = {
   ],
   ar: [
     { city: 'مسقط', role: 'المقر الرئيسي · صرافة في مسقط', note: 'تحويلات عُمان · OMR' },
-    { city: 'دبي', role: 'مسار تشغيلي في الامارات', note: 'تحويلات الامارات · AED' },
-    { city: 'Istanbul', role: 'Turkey and Europe', note: 'TRY' },
+    { city: 'دبي', role: 'مسار تشغيلي في الإمارات', note: 'تحويلات الإمارات · AED' },
+    { city: 'إسطنبول', role: 'جسر تركيا وأوروبا', note: 'تحويلات تركيا · TRY' }
   ]
 } as const;
 
@@ -131,10 +131,13 @@ export function InstitutionalFooter({
           <p>
             {fa
               ? 'اومانی خدمات صرافی و حواله بین‌المللی ارائه می‌دهد. تمامی تراکنش‌ها مشمول بررسی هویت (KYC) و ضوابط مبارزه با پولشویی (AML) هستند. این وب‌سایت مشاوره مالی یا حقوقی ارائه نمی‌دهد.'
-              : 'OMoney provides exchange and international remittance services. All transactions are subject to KYC and AML review. This website does not provide financial or legal advice.'}
+              : locale === 'ar'
+                ? 'تقدم أوماني خدمات الصرافة والتحويلات الدولية. تخضع جميع المعاملات لمراجعة الهوية (KYC) ومكافحة غسل الأموال (AML). لا يقدّم هذا الموقع استشارات مالية أو قانونية.'
+                : 'OMoney provides exchange and international remittance services. All transactions are subject to KYC and AML review. This website does not provide financial or legal advice.'}
           </p>
           <p className="mt-3">
-            © {new Date().getFullYear()} {locale === 'fa' ? 'اومانی' : locale === 'ar' ? 'أوماني' : 'OMoney'}. {fa ? 'تمامی حقوق محفوظ است.' : 'All rights reserved.'}
+            © {new Date().getFullYear()} {locale === 'fa' ? 'اومانی' : locale === 'ar' ? 'أوماني' : 'OMoney'}.{' '}
+            {fa ? 'تمامی حقوق محفوظ است.' : locale === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
           </p>
         </div>
       </div>

@@ -2,10 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MessageCircle } from 'lucide-react';
 import { content } from '../lib/content';
+import { getMediaPlacements } from '../lib/media';
 import { Locale } from '../lib/i18n';
 import { getWhatsAppHref } from '../lib/whatsapp';
 import { AssistantWidget } from './assistant-widget';
+import { InstitutionalFooter } from './institutional-footer';
 import { LanguageSwitcher } from './language-switcher';
+import { LocaleDocumentAttributes } from './locale-document-attributes';
 import { SiteHeaderAuth } from './site-header-auth';
 import { SiteMobileNav } from './site-mobile-nav';
 
@@ -15,13 +18,22 @@ function brandLabel(locale: Locale) {
   return 'OMoney';
 }
 
-export function SiteShell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
+export async function SiteShell({
+  locale,
+  children
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+}) {
   const t = content[locale];
   const whatsappHref = getWhatsAppHref(locale);
   const brand = brandLabel(locale);
+  const media = await getMediaPlacements();
+  const navItems = t.nav.filter((item) => !item.href.includes('/dashboard'));
 
   return (
     <main dir={t.dir} className="min-h-screen">
+      <LocaleDocumentAttributes locale={locale} />
       <header className="site-header text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:py-4 md:px-6">
           <Link href={`/${locale}`} className="flex min-w-0 items-center gap-2 sm:gap-3">
@@ -35,11 +47,13 @@ export function SiteShell({ locale, children }: { locale: Locale; children: Reac
             />
             <span className="min-w-0">
               <span className="brand-wordmark block truncate text-lg font-semibold text-[#f5ecd4] sm:text-xl">{brand}</span>
-              <span className="hidden text-xs text-white/55 sm:block">International Remittance</span>
+              <span className="hidden text-xs text-white/55 sm:block">
+                {locale === 'fa' ? 'حواله بین‌المللی' : locale === 'ar' ? 'تحويلات دولية' : 'International Remittance'}
+              </span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-6 text-sm text-white/75 lg:flex">
-            {t.nav.map((item) => (
+          <nav className="hidden items-center gap-5 text-sm text-white/75 xl:flex">
+            {navItems.map((item) => (
               <Link key={item.href} href={item.href} className="transition hover:text-white">
                 {item.label}
               </Link>
@@ -56,17 +70,19 @@ export function SiteShell({ locale, children }: { locale: Locale; children: Reac
                 WhatsApp
               </a>
             </div>
-            <SiteMobileNav locale={locale} nav={t.nav} whatsappHref={whatsappHref}>
+            <SiteMobileNav locale={locale} nav={navItems} whatsappHref={whatsappHref}>
               <SiteHeaderAuth locale={locale} />
             </SiteMobileNav>
           </div>
         </div>
       </header>
       {children}
+      <InstitutionalFooter locale={locale} media={media} />
       <AssistantWidget locale={locale} />
       <a
         className="fixed bottom-5 end-5 z-20 inline-flex items-center gap-2 rounded-md bg-[#0b1624] px-4 py-3 text-sm font-medium text-white shadow-2xl transition hover:bg-[#16263b]"
         href={whatsappHref}
+        aria-label="WhatsApp"
       >
         <MessageCircle size={18} /> WhatsApp
       </a>
