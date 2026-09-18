@@ -2,6 +2,8 @@ import { Locale, intlLocale } from '../lib/i18n';
 type CatalogRate = {
   code: string;
   marketRateToman: number;
+  buyRateToman?: number | null;
+  sellRateToman?: number | null;
   changeAmountToman: number | null;
   sourceKey: string;
   sourceTimestamp: string | null;
@@ -13,6 +15,9 @@ const apiBase = process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL 
 
 const faNames: Record<string, string> = {
   AED: 'درهم امارات',
+  AUD: 'دلار استرالیا',
+  CAD: 'دلار کانادا',
+  OMR: 'ریال عمان',
   BCH: 'بیت کوین کش',
   BNB: 'بایننس کوین',
   BTC: 'بیت کوین',
@@ -35,6 +40,9 @@ const faNames: Record<string, string> = {
 
 const enNames: Record<string, string> = {
   AED: 'UAE Dirham',
+  AUD: 'Australian Dollar',
+  CAD: 'Canadian Dollar',
+  OMR: 'Omani Rial',
   BCH: 'Bitcoin Cash',
   BNB: 'BNB',
   BTC: 'Bitcoin',
@@ -57,6 +65,9 @@ const enNames: Record<string, string> = {
 
 const arNames: Record<string, string> = {
   AED: 'درهم إماراتي',
+  AUD: 'الدولار الأسترالي',
+  CAD: 'الدولار الكندي',
+  OMR: 'الريال العُماني',
   BCH: 'بيتكوين كاش',
   BNB: 'بينانس كوين',
   BTC: 'بيتكوين',
@@ -144,9 +155,26 @@ export async function RatesCatalog({ locale }: { locale: Locale }) {
                       {fa ? 'تومان' : ar ? 'تومان' : 'Toman'}
                     </span>
                   </div>
-                  <p className="mt-5 text-2xl font-semibold text-[#101e30]">
-                    {formatNumber(rate.marketRateToman, locale)}
-                  </p>
+                  {group.key === 'currency' && rate.buyRateToman != null && rate.sellRateToman != null ? (
+                    <div className="mt-5 grid grid-cols-2 gap-3">
+                      <div className="rounded-md bg-black/[0.03] p-3">
+                        <p className="text-xs text-[#66707d]">{fa ? 'خرید' : ar ? 'شراء' : 'Buy'}</p>
+                        <p className="mt-1 text-xl font-semibold text-[#101e30]">
+                          {formatNumber(rate.buyRateToman, locale)}
+                        </p>
+                      </div>
+                      <div className="rounded-md bg-black/[0.03] p-3">
+                        <p className="text-xs text-[#66707d]">{fa ? 'فروش' : ar ? 'بيع' : 'Sell'}</p>
+                        <p className="mt-1 text-xl font-semibold text-[#101e30]">
+                          {formatNumber(rate.sellRateToman, locale)}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-5 text-2xl font-semibold text-[#101e30]">
+                      {formatNumber(rate.marketRateToman, locale)}
+                    </p>
+                  )}
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-black/10 pt-3 text-xs text-[#66707d]">
                     <span className="rounded-full bg-black/[0.04] px-2.5 py-1 font-sans uppercase tracking-wide">
                       {rate.sourceKey}

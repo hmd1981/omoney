@@ -30,14 +30,18 @@ export class ExchangeRatesService {
   }
 
   async catalogRates() {
+    const homepage = await this.homepageRates();
     const cached = await this.cache.getCatalog().catch(() => null);
-    if (cached?.length) return cached;
+    if (cached?.length) {
+      return this.mergeHomepageCurrenciesIntoCatalog(cached, homepage);
+    }
 
     try {
       const catalog = await this.navasan.fetchCatalogRates();
-      if (catalog.length) {
-        await this.cache.setCatalog(catalog, this.cacheTtlSec());
-        return catalog;
+      const merged = this.mergeHomepageCurrenciesIntoCatalog(catalog, homepage);
+      if (merged.length) {
+        await this.cache.setCatalog(merged, this.cacheTtlSec());
+        return merged;
       }
     } catch (error) {
       this.logger.warn(`Catalog rate fetch failed: ${error instanceof Error ? error.message : 'unknown error'}`);
@@ -120,7 +124,7 @@ export class ExchangeRatesService {
     }
     const bundle = await this.navasan.fetchBundle();
     const homepage = await this.normalizeAndPersist(this.navasan.name, bundle.homepage);
-    await this.cache.setCatalog(bundle.catalog, this.cacheTtlSec());
+    await this.cache.setCatalog(this.mergeHomepageCurrenciesIntoCatalog(bundle.catalog, homepage), this.cacheTtlSec());
     return homepage;
   }
 
@@ -227,15 +231,47 @@ export class ExchangeRatesService {
     const snapshots = await this.latestSnapshots();
     return snapshots
       .filter((rate) => !rate.unavailable && rate.marketRateToman !== null)
-      .map((rate) => ({
-        code: rate.baseCurrency,
-        marketRateToman: rate.marketRateToman as number,
-        changeAmountToman: null,
-        sourceKey: rate.sourceKey ?? rate.source,
-        sourceTimestamp: rate.updatedAt,
-        sourceDate: null,
-        assetType: 'currency' as const
-      }));
+      .map((rate) => this.homepageRateToCatalog(rate));
+  }
+
+  private mergeHomepageCurrenciesIntoCatalog(
+    catalog: PublicCatalogRate[],
+    homepage: PublicExchangeRate[]
+  ): PublicCatalogRate[] {
+    const homepageCodes = new Set(HOMEPAGE_PAIRS.map((pair) => pair.baseCurrency));
+    const homepageMap = new Map(
+      homepage
+        .filter((rate) => !rate.unavailable && rate.marketRateToman !== null)
+        .map((rate) => [rate.baseCurrency, rate])
+    );
+
+    const homepageCatalog = HOMEPAGE_PAIRS.flatMap((pair) => {
+      const rate = homepageMap.get(pair.baseCurrency);
+      return rate ? [this.homepageRateToCatalog(rate)] : [];
+    });
+
+    const supplementalCurrencies = catalog.filter(
+      (item) => item.assetType === 'currency' && !homepageCodes.has(item.code)
+    );
+    const nonCurrencies = catalog.filter((item) => item.assetType !== 'currency');
+
+    return [...homepageCatalog, ...supplementalCurrencies, ...nonCurrencies].sort((left, right) =>
+      left.code.localeCompare(right.code)
+    );
+  }
+
+  private homepageRateToCatalog(rate: PublicExchangeRate): PublicCatalogRate {
+    return {
+      code: rate.baseCurrency,
+      marketRateToman: rate.marketRateToman as number,
+      buyRateToman: rate.buyRateToman,
+      sellRateToman: rate.sellRateToman,
+      changeAmountToman: null,
+      sourceKey: rate.sourceKey ?? rate.source,
+      sourceTimestamp: rate.updatedAt,
+      sourceDate: null,
+      assetType: 'currency'
+    };
   }
 
   private markStaleIfNeeded(rates: PublicExchangeRate[]) {

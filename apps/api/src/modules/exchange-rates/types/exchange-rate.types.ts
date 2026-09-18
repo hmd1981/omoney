@@ -33,6 +33,8 @@ export type PublicExchangeRate = {
 export type PublicCatalogRate = {
   code: string;
   marketRateToman: number;
+  buyRateToman?: number | null;
+  sellRateToman?: number | null;
   changeAmountToman: number | null;
   sourceKey: string;
   sourceTimestamp: string | null;
